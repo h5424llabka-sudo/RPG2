@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マップチップ エディター</title>
+<style>
+  :root {
+    --bg-color: #0f172a;
+    --panel-bg: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --border: #334155;
+  }
+  body {
+    margin: 0; padding: 20px;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, sans-serif;
+    display: flex; flex-direction: column; height: 100vh;
+    box-sizing: border-box;
+  }
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+  .controls select, .controls button {
+    background: var(--panel-bg); color: var(--text-main);
+    border: 1px solid var(--border); padding: 8px 16px;
+    border-radius: 6px; font-size: 14px; cursor: pointer; outline: none;
+    transition: all 0.2s;
+  }
+  .controls button { background: var(--accent); border-color: var(--accent); font-weight: bold; }
+  .controls button:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  
+  .main-content {
+    display: flex; gap: 20px; flex: 1; min-height: 0;
+  }
+  .panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+  }
+  .panel-header {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    font-weight: 600; font-size: 14px; color: var(--text-muted);
+    background: rgba(0,0,0,0.1);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .panel-header-controls {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .panel-header-controls input[type="text"] {
+    background: #0f172a; color: #f8fafc; border: 1px solid var(--border);
+    padding: 4px 8px; border-radius: 4px; font-size: 12px; width: 150px;
+  }
+  .panel-header-controls input[type="file"] {
+    font-size: 12px;
+  }
+  .panel-body {
+    flex: 1; overflow: auto; padding: 16px; position: relative;
+  }
+  
+  /* Tileset Panel */
+  .tileset-panel { width: 340px; flex-shrink: 0; }
+  .tileset-container { position: relative; display: inline-block; background: #000; }
+  #tilesetCanvas { cursor: crosshair; }
+  #tilesetCursor {
+    position: absolute; pointer-events: none;
+    border: 2px solid #ef4444; width: 32px; height: 32px;
+    box-sizing: border-box; top: 0; left: 0;
+    background: rgba(239, 68, 68, 0.2);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    transition: transform 0.05s, width 0.05s, height 0.05s;
+  }
+
+  /* Map Panel */
+  .map-panel { flex: 1; }
+  .map-container { position: relative; display: inline-block; background: #000; }
+  #mapCanvas { cursor: crosshair; }
+
+  /* Output Panel */
+  .output-panel { height: 200px; margin-top: 20px; flex-shrink: 0; }
+  #outputCode {
+    width: 100%; height: 100%; box-sizing: border-box;
+    background: #0b1120; color: #a7f3d0; border: none;
+    padding: 16px; font-family: 'Fira Code', monospace;
+    font-size: 13px; resize: none; outline: none;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>マップチップ エディター</h1>
+    <div class="controls">
+      <select id="mapSelect"></select>
+      <button id="btnExport">コードを出力</button>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="panel tileset-panel">
+      <div class="panel-header">
+        パレット
+        <div class="panel-header-controls">
+          <input type="file" id="dirInput" webkitdirectory directory style="display:none">
+          <button onclick="document.getElementById('dirInput').click()" title="assetsフォルダを選択すると中のPNGが一括追加されます" style="font-size: 12px; padding: 4px; background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 4px; cursor: pointer;">📁 フォルダ読込</button>
+          <select id="tilesetSelect" style="font-size: 12px; padding: 4px; max-width: 250px;">
+            <option value="assets/宿場町/BrightForest-A1.png">宿場町/BrightForest-A1.png</option>
+            <option value="assets/宿場町/Town-PostTown-C-1.png">宿場町/Town-PostTown-C-1.png</option>
+            <option value="assets/宿場町/TownBF-A2.png">宿場町/TownBF-A2.png</option>
+            <option value="assets/宿場町/TownBF-B.png">宿場町/TownBF-B.png</option>
+            <option value="assets/宿場町/TownBF-PostTown-A5-1.png">宿場町/TownBF-PostTown-A5-1.png</option>
+            <option value="assets/宿場町/TownBF-PostTown-A5-2.png">宿場町/TownBF-PostTown-A5-2.png</option>
+            <option value="assets/pipo-charachip001a.png">pipo-charachip001a.png</option>
+            <option value="assets/pipo-charachip009.png">pipo-charachip009.png</option>
+            <option value="assets/[A]Dirt1-Dirt2_pipo.png">[A]Dirt1-Dirt2_pipo.png</option>
+          </select>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="tileset-container">
+          <canvas id="tilesetCanvas"></canvas>
+          <div id="tilesetCursor"></div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 16px; line-height: 1.5;">
+          使いたいタイルをクリックして選択してください。<br>
+          ※選択した新しいタイルには、自動的に未使用の文字（a, b, c...）が割り当てられます。
+        </p>
+      </div>
+    </div>
+    
+    <div class="panel map-panel">
+      <div class="panel-header">
+        マップ (クリック＆ドラッグで描画)
+        <div class="panel-header-controls">
+          <button id="btnUndo" disabled>元に戻す</button>
+          <label style="font-size: 12px; margin-left: 8px; cursor: pointer;">
+            <input type="checkbox" id="chkOverlay" checked> 背景を残す(重ね塗り)
+          </label>
+          <select id="brushSize" style="font-size: 12px; padding: 4px;">
+            <option value="1">1x1</option>
+            <option value="2">2x2</option>
+            <option value="3">3x3</option>
+            <option value="4">4x4</option>
+          </select>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="map-container">
+          <canvas id="mapCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel output-panel">
+    <div class="panel-header">出力コード (これを js/data.js にコピペして更新します)</div>
+    <textarea id="outputCode" readonly></textarea>
+  </div>
+
+  <script src="js/data.js"></script>
+  <!-- バッチファイルで生成される画像リスト（存在しない場合は無視されます） -->
+  <script src="js/assets_list.js" onerror="console.log('assets_list.js not found, skipping auto-load')"></script>
+  <script>
+    const TILE_SIZE = 32;
+    let tilesetImg = null;
+    
+    const tsCanvas = document.getElementById('tilesetCanvas');
+    const tsCtx = tsCanvas.getContext('2d');
+    const tsCursor = document.getElementById('tilesetCursor');
+    const tilesetSelect = document.getElementById('tilesetSelect');
+    
+    const mapCanvas = document.getElementById('mapCanvas');
+    const mapCtx = mapCanvas.getContext('2d');
+    
+    const mapSelect = document.getElementById('mapSelect');
+    const outputCode = document.getElementById('outputCode');
+    const btnExport = document.getElementById('btnExport');
+
+    let currentMapId = null;
+    let currentMap = null;
+    let selectedTile = { sx: 0, sy: 0 };
+    let isDrawing = false;
+    let isInitialized = false;
+    let history = [];
+    
+    // 現在の TILE_ID から逆引きマップを作成
+    const charToKey = { ...TILE_ID };
+    const keyToChar = {};
+    for (let char in TILE_ID) keyToChar[TILE_ID[char]] = char;
+    
+    // 使用可能な新キャラクター候補（記号やアルファベット小文字など、既存の予約文字以外）
+    const usedChars = new Set(Object.keys(TILE_ID));
+    const availableChars = 'abcdefghijklmnopqrstuvwxyz0123456789!#$%&*+-./:;<=>?@^_|~'.split('').filter(c => !usedChars.has(c));
+    let nextCharIdx = 0;
+
+    // カスタムタイルの設定を保持する
+    const customTiles = {};
+    const loadedImages = {};
+    
+    function updateTilesetCanvas() {
+      if (!tilesetImg) return;
+      tsCanvas.width = tilesetImg.width;
+      tsCanvas.height = tilesetImg.height;
+      tsCtx.drawImage(tilesetImg, 0, 0);
+      if (!isInitialized) {
+        init();
+        isInitialized = true;
+      }
+      if (currentMap) renderMap();
+    }
+
+    function loadSelectedTileset() {
+      const src = tilesetSelect.value;
+      if (!loadedImages[src]) {
+        const img = new Image();
+        img.src = src;
+        loadedImages[src] = img;
+        img.onload = () => {
+          if (tilesetSelect.value === src) {
+            tilesetImg = img;
+            updateTilesetCanvas();
+          }
+          renderMap();
+        };
+        img.onerror = () => {
+          console.warn("Failed to load: " + src);
+        };
+      } else {
+        if (loadedImages[src].complete) {
+          tilesetImg = loadedImages[src];
+          updateTilesetCanvas();
+        } else {
+          loadedImages[src].addEventListener('load', () => {
+            if (tilesetSelect.value === src) {
+              tilesetImg = loadedImages[src];
+              updateTilesetCanvas();
+            }
+          });
+        }
+      }
+    }
+    
+    loadSelectedTileset();
+
+    function init() {
+      // マップ選択のプルダウンを初期化
+      for (let mapId in MAP_DATA) {
+        let opt = document.createElement('option');
+        opt.value = mapId;
+        opt.textContent = MAP_DATA[mapId].name + ` (${mapId})`;
+        mapSelect.appendChild(opt);
+      }
+      
+      mapSelect.addEventListener('change', (e) => loadMap(e.target.value));
+      if (mapSelect.options.length > 0) loadMap(mapSelect.options[0].value);
+      
+      // 自動生成されたASSETS_LISTがあれば、プルダウンに追加
+      if (typeof ASSETS_LIST !== 'undefined') {
+        let addedCount = 0;
+        ASSETS_LIST.forEach(path => {
+          let exists = false;
+          for(let opt of tilesetSelect.options) {
+            if (opt.value === path) { exists = true; break; }
+          }
+          if (!exists) {
+            const opt = document.createElement('option');
+            opt.value = path;
+            opt.textContent = path.replace('assets/', '');
+            tilesetSelect.appendChild(opt);
+            addedCount++;
+          }
+        });
+        if (addedCount > 0) console.log(`Auto-loaded ${addedCount} new assets.`);
+      }
+
+      // パレットの画像切り替え処理
+      tilesetSelect.addEventListener('change', () => {
+        loadSelectedTileset();
+      });
+      
+      // フォルダからPNGを一括追加
+      const dirInput = document.getElementById('dirInput');
+      dirInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        let addedCount = 0;
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (file.name.endsWith('.png')) {
+            let path = file.webkitRelativePath;
+            const assetsIndex = path.indexOf('assets/');
+            if (assetsIndex !== -1) {
+              path = path.substring(assetsIndex);
+            } else {
+              path = 'assets/' + file.name;
+            }
+            
+            let exists = false;
+            for(let opt of tilesetSelect.options) {
+              if (opt.value === path) { exists = true; break; }
+            }
+            
+            if (!exists) {
+              const opt = document.createElement('option');
+              opt.value = path;
+              opt.textContent = path.replace('assets/', '');
+              tilesetSelect.appendChild(opt);
+              
+              // キャッシュ用にFileオブジェクトのURLを一時登録
+              const url = URL.createObjectURL(file);
+              const img = new Image();
+              img.src = url;
+              loadedImages[path] = img;
+              
+              addedCount++;
+            }
+          }
+        }
+        if (addedCount > 0) {
+           alert(`${addedCount}件の新しい画像を追加しました！プルダウンから選択できます。`);
+        }
+        dirInput.value = ''; // リセット
+      });
+      
+      // パレットのクリック選択処理
+      tsCanvas.addEventListener('mousedown', (e) => {
+        const rect = tsCanvas.getBoundingClientRect();
+        const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
+        const y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+        selectTile(x, y);
+      });
+      
+      // マップの描画処理
+      mapCanvas.addEventListener('mousedown', (e) => { 
+        isDrawing = true; 
+        saveState();
+        paintMap(e); 
+      });
+      window.addEventListener('mouseup', () => { 
+        isDrawing = false; 
+      });
+      mapCanvas.addEventListener('mousemove', (e) => { if(isDrawing) paintMap(e); });
+      
+      document.getElementById('btnUndo').addEventListener('click', undo);
+      window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'z') {
+           undo();
+        }
+      });
+      
+      btnExport.addEventListener('click', generateCode);
+    }
+    
+    function saveState() {
+      if (!currentMap) return;
+      history.push(currentMap.tiles.map(row => [...row]));
+      if (history.length > 50) history.shift();
+      document.getElementById('btnUndo').disabled = false;
+    }
+
+    function undo() {
+      if (history.length === 0 || !currentMap) return;
+      currentMap.tiles = history.pop();
+      renderMap();
+      if (history.length === 0) document.getElementById('btnUndo').disabled = true;
+    }
+    
+    function loadMap(mapId) {
+      currentMapId = mapId;
+      const srcMap = MAP_DATA[mapId];
+      // 上下反転（reverse）を解除して二次元配列にする
+      currentMap = {
+        ...srcMap,
+        tiles: [...srcMap.tiles].reverse().map(row => row.split(''))
+      };
+      
+      history = [];
+      document.getElementById('btnUndo').disabled = true;
+      mapCanvas.width = currentMap.w * TILE_SIZE;
+      mapCanvas.height = currentMap.h * TILE_SIZE;
+      renderMap();
+    }
+    
+    function selectTile(x, y) {
+      if (x < 0 || y < 0 || x >= tilesetImg.width/TILE_SIZE || y >= tilesetImg.height/TILE_SIZE) return;
+      selectedTile = { sx: x * TILE_SIZE, sy: y * TILE_SIZE };
+      tsCursor.style.transform = `translate(${selectedTile.sx}px, ${selectedTile.sy}px)`;
+      tsCursor.style.width = `${TILE_SIZE}px`;
+      tsCursor.style.height = `${TILE_SIZE}px`;
+    }
+    
+    function getTileCharForSelection(bgChar) {
+      const isOverlay = document.getElementById('chkOverlay').checked;
+      const bgKey = (isOverlay && bgChar) ? (charToKey[bgChar] || 'grass') : null;
+      
+      const customKey = bgKey 
+        ? `${selectedTile.sx}_${selectedTile.sy}_${tilesetSelect.value}_on_${bgKey}`
+        : `${selectedTile.sx}_${selectedTile.sy}_${tilesetSelect.value}`;
+      
+      if (keyToChar[customKey]) {
+        return keyToChar[customKey];
+      }
+      
+      const char = availableChars[nextCharIdx++];
+      if (!char) { alert('これ以上新しい種類のタイルは使えません！'); return null; }
+      
+      charToKey[char] = customKey;
+      keyToChar[customKey] = char;
+      
+      customTiles[customKey] = {
+        src: tilesetSelect.value,
+        sx: selectedTile.sx,
+        sy: selectedTile.sy
+      };
+      if (bgKey) customTiles[customKey].base = bgKey;
+      
+      return char;
+    }
+    
+    function paintMap(e) {
+      if (!currentMap) return;
+      const rect = mapCanvas.getBoundingClientRect();
+      const tx = Math.floor((e.clientX - rect.left) / TILE_SIZE);
+      const ty = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+      
+      const brushSize = parseInt(document.getElementById('brushSize').value, 10);
+      let painted = false;
+
+      for (let oy = 0; oy < brushSize; oy++) {
+        for (let ox = 0; ox < brushSize; ox++) {
+          const targetX = tx + ox;
+          const targetY = ty + oy;
+          if (targetX >= 0 && targetX < currentMap.w && targetY >= 0 && targetY < currentMap.h) {
+            const bgChar = currentMap.tiles[targetY][targetX];
+            const char = getTileCharForSelection(bgChar);
+            if (!char) continue;
+            
+            if (currentMap.tiles[targetY][targetX] !== char) {
+              currentMap.tiles[targetY][targetX] = char;
+              painted = true;
+            }
+          }
+        }
+      }
+      if (painted) renderMap();
+    }
+    
+    function drawFallbackTile(ctx, type, px, py) {
+      const cfg = ASSET_CONFIG.tiles[type];
+      if (cfg && cfg.color) {
+        ctx.fillStyle = cfg.color;
+        ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
+      } else {
+        ctx.fillStyle = '#333';
+        ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
+      }
+    }
+    
+    function drawEditorTile(tileKey, px, py) {
+      if (customTiles[tileKey]) {
+        const ct = customTiles[tileKey];
+        if (ct.base) drawEditorTile(ct.base, px, py);
+        
+        const img = loadedImages[ct.src];
+        if (img && img.complete) {
+          mapCtx.drawImage(img, ct.sx, ct.sy, TILE_SIZE, TILE_SIZE, px, py, TILE_SIZE, TILE_SIZE);
+        } else if (!img) {
+          const newImg = new Image();
+          newImg.src = ct.src;
+          loadedImages[ct.src] = newImg;
+          newImg.onload = () => renderMap();
+        }
+      } else {
+        drawFallbackTile(mapCtx, tileKey, px, py);
+      }
+    }
+
+    function renderMap() {
+      mapCtx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+      for (let y = 0; y < currentMap.h; y++) {
+        for (let x = 0; x < currentMap.w; x++) {
+          const char = currentMap.tiles[y][x];
+          const px = x * TILE_SIZE;
+          const py = y * TILE_SIZE;
+          let tileKey = charToKey[char] || 'grass';
+          drawEditorTile(tileKey, px, py);
+        }
+      }
+    }
+    
+    function generateCode() {
+      const tilesArr = currentMap.tiles.map(row => `'${row.join('')}'`);
+      tilesArr.reverse(); // data.jsの形式に合わせて上下反転
+      
+      let out = `// ==========================================\n`;
+      out += `// js/data.js を開いて、以下の変更を行ってください\n`;
+      out += `// ==========================================\n\n`;
+      
+      out += `/* --- 1. ASSET_CONFIG.tiles に追加 --- */\n`;
+      for (const [key, cfg] of Object.entries(customTiles)) {
+        let baseStr = cfg.base ? `, base: '${cfg.base}'` : '';
+        out += `    '${key}': { src: '${cfg.src}', sx: ${cfg.sx}, sy: ${cfg.sy}${baseStr} },\n`;
+      }
+      
+      out += `\n/* --- 2. TILE_ID に追加 --- */\n`;
+      const newChars = Object.keys(charToKey).filter(c => !TILE_ID[c]);
+      if (newChars.length > 0) {
+        const adds = newChars.map(c => `'${c}':'${charToKey[c]}'`).join(', ');
+        out += `// 例: const TILE_ID = { ..., ${adds} };\n`;
+      } else {
+        out += `// 追加なし\n`;
+      }
+      
+      out += `\n/* --- 3. MAP_DATA.${currentMapId}.tiles を上書き --- */\n`;
+      out += `    tiles:[\n      ${tilesArr.join(',\\n      ')}\n    ].reverse()\n`;
+      
+      outputCode.value = out;
+    }
+  </script>
+</body>
+</html>

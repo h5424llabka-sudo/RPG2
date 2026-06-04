@@ -26,8 +26,15 @@ function preloadAssets() {
 
 function drawTile(type, px, py) {
   const cfg = ASSET_CONFIG.tiles[type] || ASSET_CONFIG.tiles.grass;
+  if (cfg.base) {
+    drawTile(cfg.base, px, py);
+  }
   if (cfg._img && cfg._img.ready) {
-    ctx.drawImage(cfg._img, px, py, TILE_SIZE, TILE_SIZE);
+    if (cfg.sx !== undefined && cfg.sy !== undefined) {
+      ctx.drawImage(cfg._img, cfg.sx, cfg.sy, TILE_SIZE, TILE_SIZE, px, py, TILE_SIZE, TILE_SIZE);
+    } else {
+      ctx.drawImage(cfg._img, px, py, TILE_SIZE, TILE_SIZE);
+    }
     return;
   }
   ctx.fillStyle = cfg.color;
