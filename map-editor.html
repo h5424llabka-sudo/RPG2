@@ -192,17 +192,17 @@
     let history = [];
     
     // 現在の TILE_ID から逆引きマップを作成
-    const charToKey = { ...TILE_ID };
-    const keyToChar = {};
-    for (let char in TILE_ID) keyToChar[TILE_ID[char]] = char;
-    
-    // 使用可能な新キャラクター候補（記号やアルファベット小文字など、既存の予約文字以外）
+    // 使用可能な新キャラクター候補（数千種類のユニコード文字をサポートして上限を無くす）
     const usedChars = new Set(Object.keys(TILE_ID));
-    const availableChars = 'abcdefghijklmnopqrstuvwxyz0123456789!#$%&*+-./:;<=>?@^_|~'.split('').filter(c => !usedChars.has(c));
+    const availableChars = [];
+    for (let i = 33; i <= 8000; i++) {
+      let c = String.fromCharCode(i);
+      if (c !== "'" && c !== '"' && c !== '\\' && !usedChars.has(c)) {
+        availableChars.push(c);
+      }
+    }
     let nextCharIdx = 0;
 
-    // カスタムタイルの設定を保持する
-    const customTiles = {};
     const loadedImages = {};
     
     function updateTilesetCanvas() {
@@ -396,30 +396,47 @@
       tsCursor.style.height = `${TILE_SIZE}px`;
     }
     
+    let alertedNoChars = false;
+
     function getTileCharForSelection(bgChar) {
       const isOverlay = document.getElementById('chkOverlay').checked;
-      const bgKey = (isOverlay && bgChar) ? (charToKey[bgChar] || 'grass') : null;
       
-      const customKey = bgKey 
-        ? `${selectedTile.sx}_${selectedTile.sy}_${tilesetSelect.value}_on_${bgKey}`
-        : `${selectedTile.sx}_${selectedTile.sy}_${tilesetSelect.value}`;
+      const src = tilesetSelect.value;
+      const sx = selectedTile.sx;
+      const sy = selectedTile.sy;
       
-      if (keyToChar[customKey]) {
-        return keyToChar[customKey];
+      // 同じ画像・座標のタイルを同じ場所に塗ろうとした場合、無限に重なるのを防ぐ
+      if (bgChar) {
+        let bgType = TILE_ID[bgChar];
+        let bgCfg = ASSET_CONFIG.tiles[bgType];
+        if (bgCfg && bgCfg.src === src && bgCfg.sx === sx && bgCfg.sy === sy) {
+          return bgChar;
+        }
+      }
+
+      const baseChar = (isOverlay && bgChar) ? bgChar : undefined;
+      
+      // 既に同じ構成のタイルがあるか探す
+      for (let char of Object.keys(TILE_ID)) {
+        let type = TILE_ID[char];
+        let cfg = ASSET_CONFIG.tiles[type];
+        if (cfg && cfg.src === src && cfg.sx === sx && cfg.sy === sy && cfg.base === baseChar) {
+          return char;
+        }
       }
       
       const char = availableChars[nextCharIdx++];
-      if (!char) { alert('これ以上新しい種類のタイルは使えません！'); return null; }
+      if (!char) { 
+        if (!alertedNoChars) {
+          alert('これ以上新しい種類のタイルは使えません！'); 
+          alertedNoChars = true;
+        }
+        return null; 
+      }
       
-      charToKey[char] = customKey;
-      keyToChar[customKey] = char;
-      
-      customTiles[customKey] = {
-        src: tilesetSelect.value,
-        sx: selectedTile.sx,
-        sy: selectedTile.sy
-      };
-      if (bgKey) customTiles[customKey].base = bgKey;
+      TILE_ID[char] = char;
+      ASSET_CONFIG.tiles[char] = { src, sx, sy };
+      if (baseChar) ASSET_CONFIG.tiles[char].base = baseChar;
       
       return char;
     }
@@ -463,22 +480,25 @@
       }
     }
     
-    function drawEditorTile(tileKey, px, py) {
-      if (customTiles[tileKey]) {
-        const ct = customTiles[tileKey];
-        if (ct.base) drawEditorTile(ct.base, px, py);
+    function drawEditorTile(char, px, py) {
+      let type = TILE_ID[char];
+      if (!type) type = 'grass';
+      const cfg = ASSET_CONFIG.tiles[type];
+      
+      if (cfg && cfg.src && cfg.sx !== undefined) {
+        if (cfg.base) drawEditorTile(cfg.base, px, py);
         
-        const img = loadedImages[ct.src];
+        const img = loadedImages[cfg.src];
         if (img && img.complete) {
-          mapCtx.drawImage(img, ct.sx, ct.sy, TILE_SIZE, TILE_SIZE, px, py, TILE_SIZE, TILE_SIZE);
+          mapCtx.drawImage(img, cfg.sx, cfg.sy, TILE_SIZE, TILE_SIZE, px, py, TILE_SIZE, TILE_SIZE);
         } else if (!img) {
           const newImg = new Image();
-          newImg.src = ct.src;
-          loadedImages[ct.src] = newImg;
+          newImg.src = cfg.src;
+          loadedImages[cfg.src] = newImg;
           newImg.onload = () => renderMap();
         }
       } else {
-        drawFallbackTile(mapCtx, tileKey, px, py);
+        drawFallbackTile(mapCtx, type, px, py);
       }
     }
 
@@ -489,37 +509,51 @@
           const char = currentMap.tiles[y][x];
           const px = x * TILE_SIZE;
           const py = y * TILE_SIZE;
-          let tileKey = charToKey[char] || 'grass';
-          drawEditorTile(tileKey, px, py);
+          drawEditorTile(char, px, py);
         }
       }
     }
     
     function generateCode() {
       const tilesArr = currentMap.tiles.map(row => `'${row.join('')}'`);
-      tilesArr.reverse(); // data.jsの形式に合わせて上下反転
+      
+      const usedInMap = new Set();
+      for (let row of currentMap.tiles) {
+        for (let char of row) {
+          usedInMap.add(char);
+        }
+      }
+      
+      const tilesToExport = {};
+      function addTileToExport(char) {
+        if (tilesToExport[char]) return;
+        let type = TILE_ID[char];
+        let cfg = ASSET_CONFIG.tiles[type];
+        if (cfg && cfg.src && cfg.sx !== undefined) {
+          tilesToExport[char] = cfg;
+          if (cfg.base) addTileToExport(cfg.base);
+        }
+      }
+      
+      for (let char of usedInMap) {
+        addTileToExport(char);
+      }
       
       let out = `// ==========================================\n`;
-      out += `// js/data.js を開いて、以下の変更を行ってください\n`;
+      out += `// js/data.js の末尾に以下のコードを貼り付けてください\n`;
+      out += `// (すでに同じマップの applyMapUpdate がある場合は上書き)\n`;
       out += `// ==========================================\n\n`;
       
-      out += `/* --- 1. ASSET_CONFIG.tiles に追加 --- */\n`;
-      for (const [key, cfg] of Object.entries(customTiles)) {
+      out += `applyMapUpdate('${currentMapId}', {\n`;
+      out += `  tiles: {\n`;
+      for (const char in tilesToExport) {
+        const cfg = tilesToExport[char];
         let baseStr = cfg.base ? `, base: '${cfg.base}'` : '';
-        out += `    '${key}': { src: '${cfg.src}', sx: ${cfg.sx}, sy: ${cfg.sy}${baseStr} },\n`;
+        out += `    '${char}': { src: '${cfg.src}', sx: ${cfg.sx}, sy: ${cfg.sy}${baseStr} },\n`;
       }
       
-      out += `\n/* --- 2. TILE_ID に追加 --- */\n`;
-      const newChars = Object.keys(charToKey).filter(c => !TILE_ID[c]);
-      if (newChars.length > 0) {
-        const adds = newChars.map(c => `'${c}':'${charToKey[c]}'`).join(', ');
-        out += `// 例: const TILE_ID = { ..., ${adds} };\n`;
-      } else {
-        out += `// 追加なし\n`;
-      }
-      
-      out += `\n/* --- 3. MAP_DATA.${currentMapId}.tiles を上書き --- */\n`;
-      out += `    tiles:[\n      ${tilesArr.join(',\\n      ')}\n    ].reverse()\n`;
+      out += `  },\n`;
+      out += `  map: [\n      ${tilesArr.join(',\n      ')}\n  ].reverse()\n});\n`;
       
       outputCode.value = out;
     }

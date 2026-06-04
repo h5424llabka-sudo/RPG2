@@ -1,95 +1,112 @@
 // ゲームデータとマップ定義
 const ASSET_CONFIG = {
   characters: {
-    kanato: { src: 'assets/pipo-charachip001a.png', frameW: 32, frameH: 32, cols: 3,
-      dirRows: { down:0, left:1, right:2, up:3 }, sheetOffsetX: 0, sheetOffsetY: 0,
-      fallbackColor: '#5588ff', name: 'かなと' },
-    dog: { src: null, frameW: 32, frameH: 32, cols: 3,
-      dirRows: { down:0, left:1, right:2, up:2 }, sheetOffsetX: 0, sheetOffsetY: 0,
-      fallbackColor: '#cc8833', name: 'いぬ' },
-    turtle: { src: null, frameW: 32, frameH: 32, cols: 3,
-      dirRows: { down:0, left:1, right:2, up:2 }, sheetOffsetX: 0, sheetOffsetY: 0,
-      fallbackColor: '#44aa66', name: 'かめ' },
-    mama: { src: null, frameW: 32, frameH: 32, cols: 3,
-      dirRows: { down:0, left:1, right:2, up:2 }, sheetOffsetX: 0, sheetOffsetY: 0,
-      fallbackColor: '#ff88aa', name: 'まま' },
-    papa: { src: null, frameW: 32, frameH: 32, cols: 3,
-      dirRows: { down:0, left:1, right:2, up:2 }, sheetOffsetX: 0, sheetOffsetY: 0,
-      fallbackColor: '#8866cc', name: 'ぱぱ' },
+    kanato: {
+      src: 'assets/pipo-charachip001a.png', frameW: 32, frameH: 32, cols: 3,
+      dirRows: { down: 0, left: 1, right: 2, up: 3 }, sheetOffsetX: 0, sheetOffsetY: 0,
+      fallbackColor: '#5588ff', name: 'かなと'
+    },
+    dog: {
+      src: null, frameW: 32, frameH: 32, cols: 3,
+      dirRows: { down: 0, left: 1, right: 2, up: 2 }, sheetOffsetX: 0, sheetOffsetY: 0,
+      fallbackColor: '#cc8833', name: 'いぬ'
+    },
+    turtle: {
+      src: null, frameW: 32, frameH: 32, cols: 3,
+      dirRows: { down: 0, left: 1, right: 2, up: 2 }, sheetOffsetX: 0, sheetOffsetY: 0,
+      fallbackColor: '#44aa66', name: 'かめ'
+    },
+    mama: {
+      src: null, frameW: 32, frameH: 32, cols: 3,
+      dirRows: { down: 0, left: 1, right: 2, up: 2 }, sheetOffsetX: 0, sheetOffsetY: 0,
+      fallbackColor: '#ff88aa', name: 'まま'
+    },
+    papa: {
+      src: null, frameW: 32, frameH: 32, cols: 3,
+      dirRows: { down: 0, left: 1, right: 2, up: 2 }, sheetOffsetX: 0, sheetOffsetY: 0,
+      fallbackColor: '#8866cc', name: 'ぱぱ'
+    },
   },
   tiles: {
-    grass:  { src: null, color: '#5aaa33', topColor: '#6dcc44' },
-    water:  { src: null, color: '#2255cc', topColor: '#3377ee' },
-    tree:   { src: null, color: '#224411', topColor: '#336622' },
-    rock:   { src: null, color: '#666666', topColor: '#888888' },
-    wall:   { src: null, color: '#776655', topColor: '#998866' },
-    road:   { src: null, color: '#bbaa88', topColor: '#ccbb99' },
-    sand:   { src: null, color: '#ddcc88', topColor: '#eedd99' },
-    floor:  { src: null, color: '#ccbb99', topColor: '#ddccaa' },
-    house:  { src: null, color: '#aa7733', topColor: '#cc8844' },
+    grass: { src: null, color: '#5aaa33', topColor: '#6dcc44' },
+    water: { src: null, color: '#2255cc', topColor: '#3377ee' },
+    tree: { src: null, color: '#224411', topColor: '#336622' },
+    rock: { src: null, color: '#666666', topColor: '#888888' },
+    wall: { src: null, color: '#776655', topColor: '#998866' },
+    road: { src: null, color: '#bbaa88', topColor: '#ccbb99' },
+    sand: { src: null, color: '#ddcc88', topColor: '#eedd99' },
+    floor: { src: null, color: '#ccbb99', topColor: '#ddccaa' },
+    house: { src: null, color: '#aa7733', topColor: '#cc8844' },
     bridge: { src: null, color: '#996633', topColor: '#bb8844' },
-    exit:   { src: null, color: '#88ffbb', topColor: '#aaffcc' },
-    inn:    { src: null, color: '#ffcc88', topColor: '#ffddaa' },
+    exit: { src: null, color: '#88ffbb', topColor: '#aaffcc' },
+    inn: { src: null, color: '#ffcc88', topColor: '#ffddaa' },
     flower: { src: null, color: '#66bb44', topColor: '#88dd55' },
   },
   enemies: {
-    ghost:  { src: null, w: 64, h: 64, color: '#ccaaff', rimColor: '#9977dd' },
-    slime:  { src: null, w: 56, h: 48, color: '#88ffcc', rimColor: '#44cc88' },
-    wolf:   { src: null, w: 72, h: 64, color: '#886644', rimColor: '#664422' },
-    fairy:  { src: null, w: 56, h: 56, color: '#ffaaee', rimColor: '#cc66bb' },
-    boss:   { src: null, w: 96, h: 96, color: '#dd3333', rimColor: '#881111' },
+    ghost: { src: null, w: 64, h: 64, color: '#ccaaff', rimColor: '#9977dd' },
+    slime: { src: null, w: 56, h: 48, color: '#88ffcc', rimColor: '#44cc88' },
+    wolf: { src: null, w: 72, h: 64, color: '#886644', rimColor: '#664422' },
+    fairy: { src: null, w: 56, h: 56, color: '#ffaaee', rimColor: '#cc66bb' },
+    boss: { src: null, w: 96, h: 96, color: '#dd3333', rimColor: '#881111' },
   },
 };
-const TILE_ID = { G:'grass', W:'water', T:'tree', L:'wall', R:'road', S:'sand', F:'floor', H:'house', B:'bridge', E:'exit', I:'inn', X:'flower', K:'rock' };
-const PASSABLE = { grass:true, water:false, tree:false, wall:false, rock:false, road:true, sand:true, floor:true, house:false, bridge:true, exit:true, inn:true, flower:true };
+const TILE_ID = { G: 'grass', W: 'water', T: 'tree', L: 'wall', R: 'road', S: 'sand', F: 'floor', H: 'house', B: 'bridge', E: 'exit', I: 'inn', X: 'flower', K: 'rock' };
+const PASSABLE = { grass: true, water: false, tree: false, wall: false, rock: false, road: true, sand: true, floor: true, house: false, bridge: true, exit: true, inn: true, flower: true };
 const NPC_DEFS = {
   // ================================
   // 第1章: 最初の村 (village1)
   // ================================
   village1: [
-    { id:'elder', x:7, y:4, dir:'down', color:'#888855', name:'村長', dialogue:[
-      'かなとよ、よく来たな。',
-      '魔物たちが突然現れ、人々をさらっていったんじゃ。',
-      'まずは東にある「次の村」へ向かい、情報を集めるのじゃ！'] },
-    { id:'innkeeper', x:5, y:9, dir:'down', color:'#aa7744', name:'宿屋のおじさん', dialogue:['宿屋へようこそ！','一泊10Gで体を休めていけ。'], isInn: true },
-    { id:'kid', x:16, y:9, dir:'right', color:'#ffcc66', name:'村の子供', dialogue:['東にあるのが次の村だよ！'] },
+    {
+      id: 'elder', x: 7, y: 4, dir: 'down', color: '#888855', name: '村長', dialogue: [
+        'かなとよ、よく来たな。',
+        '魔物たちが突然現れ、人々をさらっていったんじゃ。',
+        'まずは東にある「次の村」へ向かい、情報を集めるのじゃ！']
+    },
+    { id: 'innkeeper', x: 5, y: 9, dir: 'down', color: '#aa7744', name: '宿屋のおじさん', dialogue: ['宿屋へようこそ！', '一泊10Gで体を休めていけ。'], isInn: true },
+    { id: 'kid', x: 16, y: 9, dir: 'right', color: '#ffcc66', name: '村の子供', dialogue: ['東にあるのが次の村だよ！'] },
   ],
   // ================================
   // 第1章: 次の村 (village2)
   // ================================
   village2: [
-    { id:'neighbor', x:14, y:5, dir:'left', color:'#aa8866', name:'近所のおばさん', dialogue:[
-      'かなとくん！大変よ！',
-      'ままさんは魔物にさらわれてしまったわ。',
-      'ここから南の「まが谷のダンジョン」に囚われているらしいの！',
-      'お願い、助けてあげて！'] },
-    { id:'innkeeper2', x:5, y:9, dir:'down', color:'#aa7744', name:'宿屋のおじさん', dialogue:['宿屋へようこそ！','一泊10Gだよ。'], isInn: true },
-    { id:'woodsman', x:10, y:12, dir:'right', color:'#886633', name:'木こりのおじさん', dialogue:['ダンジョンの奥には凶悪な番人がいるらしい。','しっかり準備していくんだぞ。'] },
+    {
+      id: 'neighbor', x: 14, y: 5, dir: 'left', color: '#aa8866', name: '近所のおばさん', dialogue: [
+        'かなとくん！大変よ！',
+        'ままさんは魔物にさらわれてしまったわ。',
+        'ここから南の「まが谷のダンジョン」に囚われているらしいの！',
+        'お願い、助けてあげて！']
+    },
+    { id: 'innkeeper2', x: 5, y: 9, dir: 'down', color: '#aa7744', name: '宿屋のおじさん', dialogue: ['宿屋へようこそ！', '一泊10Gだよ。'], isInn: true },
+    { id: 'woodsman', x: 10, y: 12, dir: 'right', color: '#886633', name: '木こりのおじさん', dialogue: ['ダンジョンの奥には凶悪な番人がいるらしい。', 'しっかり準備していくんだぞ。'] },
   ],
   // ================================
   // 第1章: まが谷の廃小屋 B5F
   // ================================
   dungeon1_f5: [
-    { id:'mama', x:17, y:28, dir:'down', color:'#ff88aa', name:'まま', dialogue:[
-      'かなと！よかった、来てくれたのね！',
-      '魔物にさらわれてここに閉じ込められていたの。',
-      '新しいお弁当のレシピを思いついたわ。',
-      '一緒に帰りましょう！'], isRescue: true, rescueChar: 'mama', requiresBossDefeated: true },
+    {
+      id: 'mama', x: 17, y: 28, dir: 'down', color: '#ff88aa', name: 'まま', dialogue: [
+        'かなと！よかった、来てくれたのね！',
+        '魔物にさらわれてここに閉じ込められていたの。',
+        '新しいお弁当のレシピを思いついたわ。',
+        '一緒に帰りましょう！'], isRescue: true, rescueChar: 'mama', requiresBossDefeated: true
+    },
   ],
 };
 const MAP_DATA = {
   // =============================
   // ワールドマップ
   // =============================
-  world: { name:'フィールド', w:120, h:120, bgm:'forest',
-    enemies:['slime'], encounterRate:0.04, encounterTiles:['grass','sand','forest','rock','I'], encounter:true,
-    startX:25, startY:24,
-    exits:[
-      { x:25, y:24, map:'village1', toX:12, toY:2 },
-      { x:40, y:24, map:'village2', toX:12, toY:2 },
-      { x:40, y:12, map:'dungeon1_f1', toX:27, toY:10 },
+  world: {
+    name: 'フィールド', w: 120, h: 120, bgm: 'forest',
+    enemies: ['slime'], encounterRate: 0.04, encounterTiles: ['grass', 'sand', 'forest', 'rock', 'I'], encounter: true,
+    startX: 25, startY: 24,
+    exits: [
+      { x: 25, y: 24, map: 'village1', toX: 12, toY: 2 },
+      { x: 40, y: 24, map: 'village2', toX: 12, toY: 2 },
+      { x: 40, y: 12, map: 'dungeon1_f1', toX: 27, toY: 10 },
     ],
-    tiles:[
+    tiles: [
       'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
       'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
       'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWIWGWWWIWIWWWWWWWWWWWWWWWWWWWW',
@@ -210,14 +227,16 @@ const MAP_DATA = {
       'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWGGGGGGGGGGGGGGWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
       'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWGWGGGGGGGGGWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
       'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWGWWWGGWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
-    ].reverse() },
+    ].reverse()
+  },
   // =============================
   // 最初の村 (village1)
   // =============================
-  village1: { name:'最初の村', w:25, h:20, bgm:'village', enemies:[], encounter:false,
-    startX:12, startY:17,
-    exits: [ { x:12, y:1, map:'world', toX:25, toY:23 } ],
-    tiles:[
+  village1: {
+    name: '最初の村', w: 25, h: 20, bgm: 'village', enemies: [], encounter: false,
+    startX: 12, startY: 17,
+    exits: [{ x: 12, y: 1, map: 'world', toX: 25, toY: 23 }],
+    tiles: [
       'WWWWWWWWWWWWWWWWWWWWWWWWW',
       'WWWWWWWWWWWWWWWWWWWWWWWWW',
       'WGGGGGGGGGGGGGGGGGGGGGGGW',
@@ -238,14 +257,16 @@ const MAP_DATA = {
       'WGGGGGGGGGGGGGGGGGGGGGGGW',
       'WGGGGGGGGGGGEGGGGGGGGGGGW',
       'WWWWWWWWWWWWWWWWWWWWWWWWW',
-    ].reverse() },
+    ].reverse()
+  },
   // =============================
   // 次の村 (village2)
   // =============================
-  village2: { name:'次の村', w:25, h:20, bgm:'village', enemies:[], encounter:false,
-    startX:12, startY:17,
-    exits: [ { x:12, y:1, map:'world', toX:40, toY:23 } ],
-    tiles:[
+  village2: {
+    name: '次の村', w: 25, h: 20, bgm: 'village', enemies: [], encounter: false,
+    startX: 12, startY: 17,
+    exits: [{ x: 12, y: 1, map: 'world', toX: 40, toY: 23 }],
+    tiles: [
       'WWWWWWWWWWWWWWWWWWWWWWWWW',
       'WGGGGGGGGGGGGGGGGGGGGGGGW',
       'WGGGGGGGGGGGGGGGGGGGGGGGW',
@@ -266,23 +287,25 @@ const MAP_DATA = {
       'WGGGGGGGGGGGGGGGGGGGGGGGW',
       'WGGGGGGGGGGGEGGGGGGGGGGGW',
       'WWWWWWWWWWWWWWWWWWWWWWWWW',
-    ].reverse() },
+    ].reverse()
+  },
   // =============================
   // 第1章: まが谷の廃小屋 B1F (dungeon1_f1)
   // =============================
-  dungeon1_f1: { name:'まが谷の廃小屋 B1F', w:33, h:33, bgm:'tower', isDark:true,
-    enemies:['ghost', 'slime_lv2'], encounterRate:0.04, encounterTiles:['floor'], encounter:true,
-    startX:27, startY:10,
-    exits:[
-      { x:27, y:9, map:'world', toX:40, toY:11 },
-      { x:9, y:15, map:'dungeon1_f2', toX:21, toY:28 },
+  dungeon1_f1: {
+    name: 'まが谷の廃小屋 B1F', w: 33, h: 33, bgm: 'tower', isDark: true,
+    enemies: ['ghost', 'slime_lv2'], encounterRate: 0.04, encounterTiles: ['floor'], encounter: true,
+    startX: 27, startY: 10,
+    exits: [
+      { x: 27, y: 9, map: 'world', toX: 40, toY: 11 },
+      { x: 9, y: 15, map: 'dungeon1_f2', toX: 21, toY: 28 },
     ],
-    chests:[
-      { id:'chest_f1_3_4', x:3, y:4, item:'皮の盾', opened:false },
-      { id:'chest_f1_11_9', x:11, y:9, item:'120G', opened:false },
-      { id:'chest_f1_28_5', x:28, y:5, item:'56G', opened:false },
+    chests: [
+      { id: 'chest_f1_3_4', x: 3, y: 4, item: '皮の盾', opened: false },
+      { id: 'chest_f1_11_9', x: 11, y: 9, item: '120G', opened: false },
+      { id: 'chest_f1_28_5', x: 28, y: 5, item: '56G', opened: false },
     ],
-    tiles:[
+    tiles: [
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
@@ -316,23 +339,25 @@ const MAP_DATA = {
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
-    ].reverse() },
+    ].reverse()
+  },
   // =============================
   // 第1章: まが谷の廃小屋 B2F (dungeon1_f2)
   // =============================
-  dungeon1_f2: { name:'まが谷の廃小屋 B2F', w:33, h:33, bgm:'tower', isDark:true,
-    enemies:['ghost_lv2', 'slime_lv2'], encounterRate:0.048, encounterTiles:['floor'], encounter:true,
-    startX:21, startY:28,
-    exits:[
-      { x:21, y:27, map:'dungeon1_f1', toX:9, toY:16 },
-      { x:3, y:28, map:'dungeon1_f3', toX:4, toY:5 },
+  dungeon1_f2: {
+    name: 'まが谷の廃小屋 B2F', w: 33, h: 33, bgm: 'tower', isDark: true,
+    enemies: ['ghost_lv2', 'slime_lv2'], encounterRate: 0.048, encounterTiles: ['floor'], encounter: true,
+    startX: 21, startY: 28,
+    exits: [
+      { x: 21, y: 27, map: 'dungeon1_f1', toX: 9, toY: 16 },
+      { x: 3, y: 28, map: 'dungeon1_f3', toX: 4, toY: 5 },
     ],
-    chests:[
-      { id:'chest_f2_21_17', x:21, y:17, item:'56G', opened:false },
-      { id:'chest_f2_29_4', x:29, y:4, item:'やくそう', opened:false },
-      { id:'chest_f2_9_23', x:9, y:23, item:'ちいさなメダル', opened:false },
+    chests: [
+      { id: 'chest_f2_21_17', x: 21, y: 17, item: '56G', opened: false },
+      { id: 'chest_f2_29_4', x: 29, y: 4, item: 'やくそう', opened: false },
+      { id: 'chest_f2_9_23', x: 9, y: 23, item: 'ちいさなメダル', opened: false },
     ],
-    tiles:[
+    tiles: [
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
@@ -366,23 +391,25 @@ const MAP_DATA = {
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
-    ].reverse() },
+    ].reverse()
+  },
   // =============================
   // 第1章: まが谷の廃小屋 B3F (dungeon1_f3)
   // =============================
-  dungeon1_f3: { name:'まが谷の廃小屋 B3F', w:33, h:33, bgm:'tower', isDark:true,
-    enemies:['ghost_lv2', 'wolf'], encounterRate:0.056, encounterTiles:['floor'], encounter:true,
-    startX:4, startY:5,
-    exits:[
-      { x:3, y:5, map:'dungeon1_f2', toX:4, toY:28 },
-      { x:10, y:17, map:'dungeon1_f4', toX:10, toY:9 },
+  dungeon1_f3: {
+    name: 'まが谷の廃小屋 B3F', w: 33, h: 33, bgm: 'tower', isDark: true,
+    enemies: ['ghost_lv2', 'wolf'], encounterRate: 0.056, encounterTiles: ['floor'], encounter: true,
+    startX: 4, startY: 5,
+    exits: [
+      { x: 3, y: 5, map: 'dungeon1_f2', toX: 4, toY: 28 },
+      { x: 10, y: 17, map: 'dungeon1_f4', toX: 10, toY: 9 },
     ],
-    chests:[
-      { id:'chest_f3_11_4', x:11, y:4, item:'ちいさなメダル', opened:false },
-      { id:'chest_f3_22_29', x:22, y:29, item:'ちいさなメダル', opened:false },
-      { id:'chest_f3_5_22', x:5, y:22, item:'ちいさなメダル', opened:false },
+    chests: [
+      { id: 'chest_f3_11_4', x: 11, y: 4, item: 'ちいさなメダル', opened: false },
+      { id: 'chest_f3_22_29', x: 22, y: 29, item: 'ちいさなメダル', opened: false },
+      { id: 'chest_f3_5_22', x: 5, y: 22, item: 'ちいさなメダル', opened: false },
     ],
-    tiles:[
+    tiles: [
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
@@ -416,23 +443,25 @@ const MAP_DATA = {
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
-    ].reverse() },
+    ].reverse()
+  },
   // =============================
   // 第1章: まが谷の廃小屋 B4F (dungeon1_f4)
   // =============================
-  dungeon1_f4: { name:'まが谷の廃小屋 B4F', w:33, h:33, bgm:'tower', isDark:true,
-    enemies:['wolf_lv2', 'fairy'], encounterRate:0.064, encounterTiles:['floor'], encounter:true,
-    startX:10, startY:9,
-    exits:[
-      { x:11, y:9, map:'dungeon1_f3', toX:10, toY:16 },
-      { x:29, y:11, map:'dungeon1_f5', toX:16, toY:5 },
+  dungeon1_f4: {
+    name: 'まが谷の廃小屋 B4F', w: 33, h: 33, bgm: 'tower', isDark: true,
+    enemies: ['wolf_lv2', 'fairy'], encounterRate: 0.064, encounterTiles: ['floor'], encounter: true,
+    startX: 10, startY: 9,
+    exits: [
+      { x: 11, y: 9, map: 'dungeon1_f3', toX: 10, toY: 16 },
+      { x: 29, y: 11, map: 'dungeon1_f5', toX: 16, toY: 5 },
     ],
-    chests:[
-      { id:'chest_f4_17_15', x:17, y:15, item:'皮の盾', opened:false },
-      { id:'chest_f4_23_22', x:23, y:22, item:'56G', opened:false },
-      { id:'chest_f4_5_15', x:5, y:15, item:'皮の盾', opened:false },
+    chests: [
+      { id: 'chest_f4_17_15', x: 17, y: 15, item: '皮の盾', opened: false },
+      { id: 'chest_f4_23_22', x: 23, y: 22, item: '56G', opened: false },
+      { id: 'chest_f4_5_15', x: 5, y: 15, item: '皮の盾', opened: false },
     ],
-    tiles:[
+    tiles: [
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
@@ -466,22 +495,26 @@ const MAP_DATA = {
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
-    ].reverse() },
+    ].reverse()
+  },
   // =============================
   // 第1章: まが谷の廃小屋 B5F (dungeon1_f5)
   // =============================
-  dungeon1_f5: { name:'まが谷の廃小屋 B5F', w:33, h:33, bgm:'tower', isDark:true,
-    enemies:['boss'], encounterRate:0.024, encounterTiles:['floor'], encounter:true,
-    startX:16, startY:5,
-    exits:[
-      { x:16, y:4, map:'dungeon1_f4', toX:28, toY:11 },
+  dungeon1_f5: {
+    name: 'まが谷の廃小屋 B5F', w: 33, h: 33, bgm: 'tower', isDark: true,
+    enemies: ['boss'], encounterRate: 0.024, encounterTiles: ['floor'], encounter: true,
+    startX: 16, startY: 5,
+    exits: [
+      { x: 16, y: 4, map: 'dungeon1_f4', toX: 28, toY: 11 },
     ],
-    chests:[
+    chests: [
     ],
-    boss:{ id:'dungeon1Boss', x:16, y:28, enemy:'boss', defeated:false,
-      preText:['邪悪な魔力が充満している…','「魔力充電鬼」が現れた！'],
-      postText:['魔力充電鬼が消滅した！','奥の部屋の鎖が解けた！','ままを助けに行こう！'] },
-    tiles:[
+    boss: {
+      id: 'dungeon1Boss', x: 16, y: 28, enemy: 'boss', defeated: false,
+      preText: ['邪悪な魔力が充満している…', '「魔力充電鬼」が現れた！'],
+      postText: ['魔力充電鬼が消滅した！', '奥の部屋の鎖が解けた！', 'ままを助けに行こう！']
+    },
+    tiles: [
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
@@ -515,57 +548,94 @@ const MAP_DATA = {
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
       'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL',
-    ].reverse() },
+    ].reverse()
+  },
 };
 const CHARACTER_STATS = {
-  kanato: { maxHp:80, maxMp:30, atk:15, def:10, spd:12, name:'かなと', skills:[
-      { name:'はげます', mpCost:8, effect:'buffAtk', target:'ally', desc:'味方の攻撃力UP！' },
-      { name:'おやつ', mpCost:5, effect:'heal', target:'self', power:30, desc:'HPを30回復' },
-    ] },
-  dog: { maxHp:60, maxMp:25, atk:18, def:8, spd:20, name:'いぬ', skills:[
-      { name:'ほえる', mpCost:6, effect:'stun', target:'enemy', desc:'敵を1ターン休みに！' },
-      { name:'かみつく', mpCost:4, effect:'attack', target:'enemy', power:1.8, desc:'強烈な一撃！' },
-    ] },
-  turtle: { maxHp:120, maxMp:20, atk:10, def:25, spd:5, name:'かめ', skills:[
-      { name:'からにこもる', mpCost:5, effect:'buffDef', target:'self', desc:'防御力を大幅UP！' },
-      { name:'かばう', mpCost:8, effect:'protect', target:'ally', desc:'仲間をかばう！' },
-    ] },
-  mama: { maxHp:70, maxMp:50, atk:12, def:10, spd:14, name:'まま', skills:[
-      { name:'フラッシュ', mpCost:12, effect:'blind', target:'allEnemy', desc:'敵全体を暗闇に！' },
-      { name:'おべんとう', mpCost:20, effect:'healAll', target:'allAlly', power:50, desc:'全体を大回復！' },
-    ] },
-  papa: { maxHp:75, maxMp:45, atk:20, def:12, spd:15, name:'ぱぱ', skills:[
-      { name:'分析ツール', mpCost:6, effect:'analyze', target:'enemy', desc:'敵の弱点を見破る！' },
-      { name:'プログラム発動', mpCost:18, effect:'randomAll', target:'allEnemy', desc:'ランダム全体攻撃！' },
-    ] },
+  kanato: {
+    maxHp: 80, maxMp: 30, atk: 15, def: 10, spd: 12, name: 'かなと', skills: [
+      { name: 'はげます', mpCost: 8, effect: 'buffAtk', target: 'ally', desc: '味方の攻撃力UP！' },
+      { name: 'おやつ', mpCost: 5, effect: 'heal', target: 'self', power: 30, desc: 'HPを30回復' },
+    ]
+  },
+  dog: {
+    maxHp: 60, maxMp: 25, atk: 18, def: 8, spd: 20, name: 'いぬ', skills: [
+      { name: 'ほえる', mpCost: 6, effect: 'stun', target: 'enemy', desc: '敵を1ターン休みに！' },
+      { name: 'かみつく', mpCost: 4, effect: 'attack', target: 'enemy', power: 1.8, desc: '強烈な一撃！' },
+    ]
+  },
+  turtle: {
+    maxHp: 120, maxMp: 20, atk: 10, def: 25, spd: 5, name: 'かめ', skills: [
+      { name: 'からにこもる', mpCost: 5, effect: 'buffDef', target: 'self', desc: '防御力を大幅UP！' },
+      { name: 'かばう', mpCost: 8, effect: 'protect', target: 'ally', desc: '仲間をかばう！' },
+    ]
+  },
+  mama: {
+    maxHp: 70, maxMp: 50, atk: 12, def: 10, spd: 14, name: 'まま', skills: [
+      { name: 'フラッシュ', mpCost: 12, effect: 'blind', target: 'allEnemy', desc: '敵全体を暗闇に！' },
+      { name: 'おべんとう', mpCost: 20, effect: 'healAll', target: 'allAlly', power: 50, desc: '全体を大回復！' },
+    ]
+  },
+  papa: {
+    maxHp: 75, maxMp: 45, atk: 20, def: 12, spd: 15, name: 'ぱぱ', skills: [
+      { name: '分析ツール', mpCost: 6, effect: 'analyze', target: 'enemy', desc: '敵の弱点を見破る！' },
+      { name: 'プログラム発動', mpCost: 18, effect: 'randomAll', target: 'allEnemy', desc: 'ランダム全体攻撃！' },
+    ]
+  },
 };
 const ENEMY_STATS = {
-  ghost:     { name:'イタズラおばけ',     hp:35,  atk:8,  def:4,  spd:10, exp:15, gold:8,  skills:['おどかす'], color:'#ccaaff', weakTo:'light', level:1,
-    drops:[{item:'herb',rate:0.60},{item:'rust_screw',rate:0.40},{item:'film',rate:0.05}] },
-  ghost_lv2: { name:'イタズラおばけ(Lv2)',hp:50,  atk:12, def:6,  spd:12, exp:25, gold:12, skills:['おどかす'], color:'#dd99ff', weakTo:'light', level:2,
-    drops:[{item:'herb',rate:0.70},{item:'rust_screw',rate:0.50},{item:'film',rate:0.08}] },
-  ghost_lv3: { name:'シャドウおばけ',     hp:70,  atk:16, def:8,  spd:14, exp:40, gold:18, skills:['おどかす','つきまとう'], color:'#8844cc', weakTo:'light', level:3,
-    drops:[{item:'herb',rate:0.80},{item:'magic_board',rate:0.30},{item:'film',rate:0.12}] },
-  slime:     { name:'迷子スライム',        hp:25,  atk:5,  def:3,  spd:8,  exp:10, gold:5,  skills:['たいあたり'], color:'#88ffcc', weakTo:'fire', level:1,
-    drops:[{item:'jelly',rate:0.70},{item:'rust_screw',rate:0.30},{item:'film',rate:0.05}] },
-  slime_lv2: { name:'まるいスライム',     hp:40,  atk:8,  def:5,  spd:10, exp:18, gold:10, skills:['たいあたり','スライム液'], color:'#44ffee', weakTo:'fire', level:2,
-    drops:[{item:'jelly',rate:0.80},{item:'rust_screw',rate:0.40},{item:'film',rate:0.08}] },
-  slime_lv3: { name:'キングスライム',     hp:65,  atk:14, def:8,  spd:12, exp:35, gold:20, skills:['たいあたり','スライム液','分裂'], color:'#00ffff', weakTo:'fire', level:3,
-    drops:[{item:'jelly',rate:0.90},{item:'old_gear',rate:0.40},{item:'film',rate:0.15}] },
-  wolf:      { name:'もりのオオカミ',     hp:55,  atk:14, def:8,  spd:15, exp:25, gold:15, skills:['かみつく','おたけび'], color:'#886644', weakTo:'thunder', level:1,
-    drops:[{item:'nut',rate:0.50},{item:'herb',rate:0.40},{item:'film',rate:0.05}] },
-  wolf_lv2:  { name:'ダークウルフ',       hp:75,  atk:18, def:10, spd:17, exp:35, gold:22, skills:['かみつく','おたけび','ブレスアタック'], color:'#553322', weakTo:'thunder', level:2,
-    drops:[{item:'nut',rate:0.60},{item:'herb',rate:0.50},{item:'film',rate:0.08}] },
-  wolf_lv3:  { name:'スカイウルフ',       hp:95,  atk:22, def:12, spd:20, exp:50, gold:30, skills:['かみつく','おたけび','ブレスアタック'], color:'#334411', weakTo:'thunder', level:3,
-    drops:[{item:'nut',rate:0.70},{item:'old_gear',rate:0.30},{item:'film',rate:0.12}] },
-  fairy:     { name:'イタズラ妖精',       hp:40,  atk:10, def:6,  spd:18, exp:20, gold:12, skills:['まどわせ'], color:'#ffaaee', weakTo:'dark', level:1,
-    drops:[{item:'sparkle_water',rate:0.60},{item:'nut',rate:0.40},{item:'film',rate:0.05}] },
-  fairy_lv2: { name:'トリックフェアリー', hp:55,  atk:13, def:8,  spd:20, exp:30, gold:18, skills:['まどわせ','ぶぶん'], color:'#ff88dd', weakTo:'dark', level:2,
-    drops:[{item:'sparkle_water',rate:0.70},{item:'nut',rate:0.50},{item:'film',rate:0.08}] },
-  fairy_lv3: { name:'クイーンフェアリー', hp:75,  atk:17, def:10, spd:23, exp:45, gold:28, skills:['まどわせ','ぶぶん','魔法の光'], color:'#ffccff', weakTo:'dark', level:3,
-    drops:[{item:'sparkle_water',rate:0.80},{item:'coil',rate:0.30},{item:'film',rate:0.12}] },
-  boss:      { name:'もりのぬし',         hp:180, atk:22, def:15, spd:12, exp:80, gold:50, skills:['つよいひっかき','もりのおたけび'], color:'#dd3333', weakTo:'light', isBoss:true, level:1,
-    drops:[{item:'boss_thorn',rate:1.00},{item:'rainbow_mushroom',rate:1.00},{item:'film',rate:1.00}] },
+  ghost: {
+    name: 'イタズラおばけ', hp: 35, atk: 8, def: 4, spd: 10, exp: 15, gold: 8, skills: ['おどかす'], color: '#ccaaff', weakTo: 'light', level: 1,
+    drops: [{ item: 'herb', rate: 0.60 }, { item: 'rust_screw', rate: 0.40 }, { item: 'film', rate: 0.05 }]
+  },
+  ghost_lv2: {
+    name: 'イタズラおばけ(Lv2)', hp: 50, atk: 12, def: 6, spd: 12, exp: 25, gold: 12, skills: ['おどかす'], color: '#dd99ff', weakTo: 'light', level: 2,
+    drops: [{ item: 'herb', rate: 0.70 }, { item: 'rust_screw', rate: 0.50 }, { item: 'film', rate: 0.08 }]
+  },
+  ghost_lv3: {
+    name: 'シャドウおばけ', hp: 70, atk: 16, def: 8, spd: 14, exp: 40, gold: 18, skills: ['おどかす', 'つきまとう'], color: '#8844cc', weakTo: 'light', level: 3,
+    drops: [{ item: 'herb', rate: 0.80 }, { item: 'magic_board', rate: 0.30 }, { item: 'film', rate: 0.12 }]
+  },
+  slime: {
+    name: '迷子スライム', hp: 25, atk: 5, def: 3, spd: 8, exp: 10, gold: 5, skills: ['たいあたり'], color: '#88ffcc', weakTo: 'fire', level: 1,
+    drops: [{ item: 'jelly', rate: 0.70 }, { item: 'rust_screw', rate: 0.30 }, { item: 'film', rate: 0.05 }]
+  },
+  slime_lv2: {
+    name: 'まるいスライム', hp: 40, atk: 8, def: 5, spd: 10, exp: 18, gold: 10, skills: ['たいあたり', 'スライム液'], color: '#44ffee', weakTo: 'fire', level: 2,
+    drops: [{ item: 'jelly', rate: 0.80 }, { item: 'rust_screw', rate: 0.40 }, { item: 'film', rate: 0.08 }]
+  },
+  slime_lv3: {
+    name: 'キングスライム', hp: 65, atk: 14, def: 8, spd: 12, exp: 35, gold: 20, skills: ['たいあたり', 'スライム液', '分裂'], color: '#00ffff', weakTo: 'fire', level: 3,
+    drops: [{ item: 'jelly', rate: 0.90 }, { item: 'old_gear', rate: 0.40 }, { item: 'film', rate: 0.15 }]
+  },
+  wolf: {
+    name: 'もりのオオカミ', hp: 55, atk: 14, def: 8, spd: 15, exp: 25, gold: 15, skills: ['かみつく', 'おたけび'], color: '#886644', weakTo: 'thunder', level: 1,
+    drops: [{ item: 'nut', rate: 0.50 }, { item: 'herb', rate: 0.40 }, { item: 'film', rate: 0.05 }]
+  },
+  wolf_lv2: {
+    name: 'ダークウルフ', hp: 75, atk: 18, def: 10, spd: 17, exp: 35, gold: 22, skills: ['かみつく', 'おたけび', 'ブレスアタック'], color: '#553322', weakTo: 'thunder', level: 2,
+    drops: [{ item: 'nut', rate: 0.60 }, { item: 'herb', rate: 0.50 }, { item: 'film', rate: 0.08 }]
+  },
+  wolf_lv3: {
+    name: 'スカイウルフ', hp: 95, atk: 22, def: 12, spd: 20, exp: 50, gold: 30, skills: ['かみつく', 'おたけび', 'ブレスアタック'], color: '#334411', weakTo: 'thunder', level: 3,
+    drops: [{ item: 'nut', rate: 0.70 }, { item: 'old_gear', rate: 0.30 }, { item: 'film', rate: 0.12 }]
+  },
+  fairy: {
+    name: 'イタズラ妖精', hp: 40, atk: 10, def: 6, spd: 18, exp: 20, gold: 12, skills: ['まどわせ'], color: '#ffaaee', weakTo: 'dark', level: 1,
+    drops: [{ item: 'sparkle_water', rate: 0.60 }, { item: 'nut', rate: 0.40 }, { item: 'film', rate: 0.05 }]
+  },
+  fairy_lv2: {
+    name: 'トリックフェアリー', hp: 55, atk: 13, def: 8, spd: 20, exp: 30, gold: 18, skills: ['まどわせ', 'ぶぶん'], color: '#ff88dd', weakTo: 'dark', level: 2,
+    drops: [{ item: 'sparkle_water', rate: 0.70 }, { item: 'nut', rate: 0.50 }, { item: 'film', rate: 0.08 }]
+  },
+  fairy_lv3: {
+    name: 'クイーンフェアリー', hp: 75, atk: 17, def: 10, spd: 23, exp: 45, gold: 28, skills: ['まどわせ', 'ぶぶん', '魔法の光'], color: '#ffccff', weakTo: 'dark', level: 3,
+    drops: [{ item: 'sparkle_water', rate: 0.80 }, { item: 'coil', rate: 0.30 }, { item: 'film', rate: 0.12 }]
+  },
+  boss: {
+    name: 'もりのぬし', hp: 180, atk: 22, def: 15, spd: 12, exp: 80, gold: 50, skills: ['つよいひっかき', 'もりのおたけび'], color: '#dd3333', weakTo: 'light', isBoss: true, level: 1,
+    drops: [{ item: 'boss_thorn', rate: 1.00 }, { item: 'rainbow_mushroom', rate: 1.00 }, { item: 'film', rate: 1.00 }]
+  },
 };
 const COMMANDS = ['たたかう', 'スキル', 'ぼうぎょ', 'どうぐ', 'にげる'];
 
@@ -620,19 +690,19 @@ function isPassable(map, tx, ty, hasTurtle) {
 // ----- アイテム定義 -----
 const ITEMS = {
   // 食材系
-  herb:             { name:'もりのハーブ',       category:'food',  desc:'香り高い薬草。お弁当の材料に。' },
-  jelly:            { name:'ぷるぷるゼリー',     category:'food',  desc:'スライムが落としたゼリー状の液体。' },
-  sparkle_water:    { name:'きらきら水',         category:'food',  desc:'妖精の泉からとれる澄んだ水。' },
-  nut:              { name:'大粒の木の実',       category:'food',  desc:'栄養満点のおいしい木の実。' },
-  rainbow_mushroom: { name:'伝説のにじいろ茸',   category:'food',  desc:'七色に輝く幻のキノコ。超レア。' },
+  herb: { name: 'もりのハーブ', category: 'food', desc: '香り高い薬草。お弁当の材料に。' },
+  jelly: { name: 'ぷるぷるゼリー', category: 'food', desc: 'スライムが落としたゼリー状の液体。' },
+  sparkle_water: { name: 'きらきら水', category: 'food', desc: '妖精の泉からとれる澄んだ水。' },
+  nut: { name: '大粒の木の実', category: 'food', desc: '栄養満点のおいしい木の実。' },
+  rainbow_mushroom: { name: '伝説のにじいろ茸', category: 'food', desc: '七色に輝く幻のキノコ。超レア。' },
   // ジャンクパーツ系
-  rust_screw:       { name:'錆びたネジ',         category:'parts', desc:'どこかの機械のネジ。まだ使えそう。' },
-  old_gear:         { name:'古びた歯車',         category:'parts', desc:'年季の入った小さな歯車。' },
-  coil:             { name:'超伝導コイル',       category:'parts', desc:'高度な技術で作られたコイル。' },
-  magic_board:      { name:'怪しい魔力基盤',     category:'parts', desc:'魔力が通う不思議な電子基板。' },
-  boss_thorn:       { name:'ぬしのトゲ',         category:'parts', desc:'ボスから確定で手に入る鋭いトゲ。' },
+  rust_screw: { name: '錆びたネジ', category: 'parts', desc: 'どこかの機械のネジ。まだ使えそう。' },
+  old_gear: { name: '古びた歯車', category: 'parts', desc: '年季の入った小さな歯車。' },
+  coil: { name: '超伝導コイル', category: 'parts', desc: '高度な技術で作られたコイル。' },
+  magic_board: { name: '怪しい魔力基盤', category: 'parts', desc: '魔力が通う不思議な電子基板。' },
+  boss_thorn: { name: 'ぬしのトゲ', category: 'parts', desc: 'ボスから確定で手に入る鋭いトゲ。' },
   // ガチャ資源
-  film:             { name:'思い出のフイルム',   category:'gacha', desc:'ままに現像してもらうと何かが出る！' },
+  film: { name: '思い出のフイルム', category: 'gacha', desc: 'ままに現像してもらうと何かが出る！' },
 };
 
 // ----- お弁当レシピ定義 -----
@@ -641,7 +711,7 @@ const RECIPES = [
   {
     id: 'jelly_dish',
     name: 'スライムのぷるぷるゼリー寄せ',
-    cost: { jelly:3, sparkle_water:1 },
+    cost: { jelly: 3, sparkle_water: 1 },
     desc: '味方単体のHPを40、MPを10回復。',
     target: 'single',
     apply(target) {
@@ -652,7 +722,7 @@ const RECIPES = [
   {
     id: 'herb_tea',
     name: 'もりのリフレッシュハーブティー',
-    cost: { herb:3, sparkle_water:2 },
+    cost: { herb: 3, sparkle_water: 2 },
     desc: '全体HP30回復＆暗闇を除去。',
     target: 'all',
     apply(target) {
@@ -663,7 +733,7 @@ const RECIPES = [
   {
     id: 'nut_onigiri',
     name: 'がんばり木の実おにぎり',
-    cost: { nut:2, herb:1 },
+    cost: { nut: 2, herb: 1 },
     desc: '全体の攻撃力を3ターン20%上昇（重ね掛け可）。',
     target: 'all',
     apply(target) {
@@ -673,7 +743,7 @@ const RECIPES = [
   {
     id: 'rainbow_bento',
     name: '愛情たっぷり！にじいろ特製幕の内',
-    cost: { rainbow_mushroom:1, jelly:2, nut:2 },
+    cost: { rainbow_mushroom: 1, jelly: 2, nut: 2 },
     desc: '全員をHP・MP全快で完全蘇生。',
     target: 'all',
     apply(target) {
@@ -689,7 +759,7 @@ const GADGETS = [
     id: 'megaphone',
     name: '友情の拡声メガホン',
     forChar: 'kanato',
-    cost: { rust_screw:5, boss_thorn:1 },
+    cost: { rust_screw: 5, boss_thorn: 1 },
     desc: '「はげます」の攻撃バフ倍率が30%→50%に強化。',
     effect: 'megaphone',
   },
@@ -697,7 +767,7 @@ const GADGETS = [
     id: 'spike_collar',
     name: 'トゲトゲ合金首輪',
     forChar: 'dog',
-    cost: { boss_thorn:2, rust_screw:3 },
+    cost: { boss_thorn: 2, rust_screw: 3 },
     desc: '通常攻撃時、15%の確率でかみつくが自動追撃。',
     effect: 'spike_collar',
   },
@@ -705,7 +775,7 @@ const GADGETS = [
     id: 'titanium_shell',
     name: 'チタン合金甲羅シールド',
     forChar: 'turtle',
-    cost: { old_gear:4, magic_board:2 },
+    cost: { old_gear: 4, magic_board: 2 },
     desc: 'からにこもる使用時、3ターン毎ターンHP10%自動回復。',
     effect: 'titanium_shell',
   },
@@ -713,7 +783,7 @@ const GADGETS = [
     id: 'hyper_shutter',
     name: 'ハイパースピードシャッター',
     forChar: 'mama',
-    cost: { old_gear:3, coil:1 },
+    cost: { old_gear: 3, coil: 1 },
     desc: 'フラッシュの消費MPが12→6に半減。',
     effect: 'hyper_shutter',
   },
@@ -721,7 +791,7 @@ const GADGETS = [
     id: 'hyper_processor',
     name: 'ハイパー・プロセッサ・コプロ',
     forChar: 'papa',
-    cost: { magic_board:3, coil:2 },
+    cost: { magic_board: 3, coil: 2 },
     desc: 'プログラム発動の最低ダメージ倍率が0.8→1.2に上昇。',
     effect: 'hyper_processor',
   },
@@ -774,3 +844,109 @@ const PHOTO_CARDS = [
 ];
 // 全カードの重みの合計（ガチャ抽選計算用）
 const PHOTO_TOTAL_WEIGHT = PHOTO_CARDS.reduce((s, c) => s + c.weight, 0);
+
+// ==========================================
+// マップエディタ更新用関数
+// ==========================================
+window.applyMapUpdate = function (mapId, data) {
+  if (data.tiles) {
+    for (let char in data.tiles) {
+      TILE_ID[char] = char;
+      ASSET_CONFIG.tiles[char] = data.tiles[char];
+    }
+  }
+  if (MAP_DATA[mapId] && data.map) {
+    MAP_DATA[mapId].tiles = data.map;
+  }
+};
+
+// ==========================================
+// マップエディタ出力内容
+// ==========================================
+/* applyMapUpdate('village1', {
+  tiles: {
+    'a': { src: 'assets/pipo-map001/640x480/pipo-map001.png', sx: 0, sy: 0 },
+    'b': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 96, sy: 288 },
+    'c': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 96, sy: 320 },
+    'd': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 224, sy: 288 },
+    'e': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0 },
+    'f': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 128, sy: 832 },
+    'g': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 128, sy: 832, base: 'e' },
+    'h': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 128, sy: 832, base: 'g' },
+    'i': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 864, base: 'e' },
+    'j': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 64, sy: 832, base: 'e' },
+    'k': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 832, base: 'e' },
+    'l': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 864, base: 'k' },
+    'm': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 64, sy: 864, base: 'e' },
+    'n': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2688, base: 'e' },
+    'o': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2720, base: 'e' },
+    'p': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2752, base: 'e' },
+    'q': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2752, base: 'p' },
+    'r': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2656, base: 'e' },
+    's': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 96, sy: 832, base: 'e' },
+    't': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 96, sy: 864, base: 'e' },
+    'u': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2720, base: 'o' },
+    'v': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2624, base: 'e' }
+  },
+  map: [
+      'WWWWWWWWWWWWWWWWWWWWWWWWW',
+      'WeeeeeeeeeeeEeeeeeeeeeeeW',
+      'WeeeeeeeeeeeeeeeeeeeeeeeW',
+      'WeeeeeeeeeeeeeeeeeeeeeeeW',
+      'WeeeeeeeeeeeeeeeeeeeeeeeW',
+      'WeemiiireeeeeeeeeeeeeeeeW',
+      'WeekeqeeeeeeeeeeeeeeeeeeW',
+      'WeekeoeeeeeeeeeeeeeeeeeeW',
+      'WeekeneeeeeeeeeeeeeeeeeeW',
+      'WeejiiieeeeeeeeviiiiteeeW',
+      'WeeeeeeeeeeeeeeeeepekeeeW',
+      'WeeeeeeeeeeeeeeeeeuekeeeW',
+      'WeeeeeeeeeeeeeeeeenekeeeW',
+      'WeeeeeeeeeeeeeeeiiiiseeeW',
+      'WeeeeeeeeeeeeeeeeeeeeeeeW',
+      'WeeeeeeeeeeeeeeeeeeeeeeeW',
+      'WeeeeeeeeeeeeeeeeeeeeeeeW',
+      'WeeeeeeeeeeeeeeeeeeeeeeeW',
+      'WWWWWWWWWWWWWWWWWWWWWWWWW',
+      'WWWWWWWWWWWWWWWWWWWWWWWWW'
+  ].reverse()
+});
+ */
+// ==========================================
+// js/data.js の末尾に以下のコードを貼り付けてください
+// (すでに同じマップの applyMapUpdate がある場合は上書き)
+// ==========================================
+// ==========================================
+// js/data.js の末尾に以下のコードを貼り付けてください
+// (すでに同じマップの applyMapUpdate がある場合は上書き)
+// ==========================================
+
+applyMapUpdate('village1', {
+  tiles: {
+    '!': { src: 'assets/宿場町/BrightForest-A1.png', sx: 0, sy: 0, base: 'G' },
+    '#': { src: 'assets/宿場町/BrightForest-A1.png', sx: 0, sy: 0, base: 'R' },
+    '$': { src: 'assets/宿場町/BrightForest-A1.png', sx: 0, sy: 0, base: 'H' },
+  },
+  map: [
+    'WWWWWWWWWWWWWWWWWWWWWWWWW',
+    'WWWWWWWWWWWWWWWWWWWWWWWWW',
+    'WGGGGGGGGGGGGGGGGGGGGGGGW',
+    'WGHHHGGGGGGGGGGGGGHHHGGGW',
+    'WGHHHGGGGGGGGGGGGGHHHGGGW',
+    'WGGG!!!R##R#!!!GGGGGGGGGW',
+    'WGGGGGGGGGGGGGG!!!!GGGXGW',
+    'WGXGGGGIGGGGGGGGGG!GGGGGW',
+    'WGGGGGGGGRGGGGGGG!GGGGGGW',
+    'WGGGGGGGGRGGGGG!!GGGGGGGW',
+    'WGGG!!IGGRGG!!$HHHGGGGGGW',
+    'WGGG!!!!!#G!GGHHHHGGGGGGW',
+    'WGGG!GGGGRGGGGGGGGGGGGGGW',
+    'WGGG!GGGGGGGGGGGGG!!GGGGW',
+    'WGGG!GGGGGGGGGG!!!GGGGXGW',
+    'WGGG!GGGGGG!!!!GGGGGGGGGW',
+    'WGGGG!!!!!!GGGGGGGGGGGGGW',
+    'WGGGGGGGGGGGGGGGGGGGGGGGW',
+    'WGGGGGGGGGGGEGGGGGGGGGGGW',
+    'WWWWWWWWWWWWWWWWWWWWWWWWW'
+  ].reverse()
+});
