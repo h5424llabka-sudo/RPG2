@@ -622,3 +622,83 @@ function renderGameOver() {
   ctx.fillStyle = '#8888aa'; ctx.font = `16px ${FONT_JP}`; ctx.fillText('あきらめないで！もういちどがんばろう！', 320, 260);
   if (Math.floor(Date.now() / 600) % 2 === 0) drawText('Zキーでタイトルへもどる', 320, 320, '#aaaaff', 15, 'center');
 }
+
+function renderShop() {
+  renderMap();
+  const sd = GameState.shopData;
+  if (!sd) return;
+
+  // 背景オーバーレイ
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0, 0, 640, 480);
+
+  const isWeapon = sd.type === 'weapon';
+  const title = isWeapon ? '⚔ 武器屋' : '🧪 道具屋';
+  const accentColor = isWeapon ? '#ffcc44' : '#44ffcc';
+
+  // メインパネル
+  drawBox(80, 60, 480, 360, title);
+
+  // タイトル装飾
+  ctx.fillStyle = accentColor;
+  ctx.font = `bold 18px ${FONT_JP}`;
+  ctx.textAlign = 'center';
+  ctx.fillText(title, 320, 92);
+
+  // 所持金
+  ctx.font = `14px ${FONT_JP}`;
+  ctx.fillStyle = '#ffdd44';
+  ctx.textAlign = 'right';
+  ctx.fillText(`💰 ${GameState.gold}G`, 548, 92);
+
+  // 商品リスト
+  sd.items.forEach((item, i) => {
+    const sel = i === sd.selected;
+    const y = 120 + i * 46;
+    // 選択ハイライト
+    if (sel) {
+      ctx.fillStyle = 'rgba(80,120,220,0.35)';
+      ctx.fillRect(90, y - 2, 460, 40);
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(90, y - 2, 460, 40);
+    }
+    // 商品名
+    ctx.fillStyle = sel ? '#ffffff' : '#aabbff';
+    ctx.font = `bold 14px ${FONT_JP}`;
+    ctx.textAlign = 'left';
+    ctx.fillText((sel ? '▶ ' : '  ') + item.name, 100, y + 14);
+
+    // 説明文
+    ctx.fillStyle = '#7788aa';
+    ctx.font = `11px ${FONT_JP}`;
+    ctx.fillText(item.desc, 110, y + 30);
+
+    // 価格
+    const canBuy = GameState.gold >= item.price;
+    ctx.fillStyle = canBuy ? '#ffdd44' : '#aa6644';
+    ctx.font = `bold 14px ${FONT_JP}`;
+    ctx.textAlign = 'right';
+    ctx.fillText(`${item.price}G`, 540, y + 14);
+  });
+
+  // 区切り線
+  ctx.strokeStyle = '#334466';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(90, 355);
+  ctx.lineTo(550, 355);
+  ctx.stroke();
+
+  // 操作ガイド
+  drawText('Z: 購入  X: やめる  ↑↓: 選択', 320, 368, '#7788aa', 12, 'center');
+
+  // 選択中の商品の詳細説明エリア
+  const selItem = sd.items[sd.selected];
+  if (selItem) {
+    const canBuy = GameState.gold >= selItem.price;
+    const msg = canBuy ? `「${selItem.name}」を ${selItem.price}G で買いますか？` : `お金が足りません（${selItem.price}G 必要）`;
+    const col = canBuy ? '#aaffcc' : '#ff8888';
+    drawText(msg, 320, 393, col, 13, 'center');
+  }
+}

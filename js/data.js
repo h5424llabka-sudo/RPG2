@@ -858,6 +858,19 @@ window.applyMapUpdate = function (mapId, data) {
   if (MAP_DATA[mapId] && data.map) {
     MAP_DATA[mapId].tiles = data.map;
   }
+  // 衝突判定の上書き: { 'T': false, 'G': true, ... }
+  if (data.passable) {
+    for (let char in data.passable) {
+      const tileType = TILE_ID[char] || char;
+      PASSABLE[tileType] = data.passable[char];
+      // カスタムタイル文字に直接フラグを設定
+      PASSABLE[char] = data.passable[char];
+    }
+  }
+  // NPC定義の上書き: エディタで配置したNPCをNPC_DEFSに反映
+  if (data.npcs) {
+    NPC_DEFS[mapId] = data.npcs;
+  }
 };
 
 // ==========================================
@@ -920,33 +933,104 @@ window.applyMapUpdate = function (mapId, data) {
 // js/data.js の末尾に以下のコードを貼り付けてください
 // (すでに同じマップの applyMapUpdate がある場合は上書き)
 // ==========================================
+// ==========================================
+// js/data.js の末尾に以下のコードを貼り付けてください
+// (すでに同じマップの applyMapUpdate がある場合は上書き)
+// ==========================================
+// ==========================================
+// js/data.js の末尾に以下のコードを貼り付けてください
+// (すでに同じマップの applyMapUpdate がある場合は上書き)
+// ==========================================
+
+// ==========================================
+// js/data.js の末尾に以下のコードを貼り付けてください
+// (すでに同じマップの applyMapUpdate がある場合は上書き)
+// ==========================================
 
 applyMapUpdate('village1', {
   tiles: {
+    '0': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 64, sy: 832, base: '%' },
+    '1': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 832, base: '%' },
+    '3': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 64, sy: 864, base: '%' },
+    '4': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2688, base: ')' },
+    '5': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2720, base: ')' },
+    '6': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2752, base: '%' },
+    '7': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2624, base: '%' },
+    '8': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 96, sy: 832, base: '%' },
+    '9': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 96, sy: 864, base: '%' },
+    '@': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 32, sy: 160, base: '%' },
+    '%': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0, base: 'G' },
+    '&': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0, base: 'H' },
+    ')': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0, base: '!' },
     '!': { src: 'assets/宿場町/BrightForest-A1.png', sx: 0, sy: 0, base: 'G' },
+    '+': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0, base: 'R' },
+    '*': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0, base: '#' },
     '#': { src: 'assets/宿場町/BrightForest-A1.png', sx: 0, sy: 0, base: 'R' },
+    '>': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 2656, base: ')' },
+    '.': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 864, base: '%' },
+    '(': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0, base: 'X' },
+    ',': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0, base: 'I' },
+    '-': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 0, base: '$' },
     '$': { src: 'assets/宿場町/BrightForest-A1.png', sx: 0, sy: 0, base: 'H' },
+    '=': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 3424, base: '%' },
+    '<': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 32, sy: 3424, base: '%' },
+    ':': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 864, base: '&' },
+    '/': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 0, sy: 864, base: ')' },
+    'C': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 64, sy: 32, base: '%' },
+    'D': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 96, sy: 32, base: '%' },
+    'J': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 64, sy: 64, base: '%' },
+    '?': { src: 'assets/MapChip/[Base]BaseChip_pipo.png', sx: 96, sy: 64, base: '%' },
   },
+  passable: {
+    '0': false,  // 通れない
+    '1': false,  // 通れない
+    '3': false,  // 通れない
+    '4': false,  // 通れない
+    '5': false,  // 通れない
+    '6': false,  // 通れない
+    '7': false,  // 通れない
+    '8': false,  // 通れない
+    '9': false,  // 通れない
+    '@': false,  // 通れない
+    '>': false,  // 通れない
+    '.': false,  // 通れない
+    '=': false,  // 通れない
+    '<': false,  // 通れない
+    ':': false,  // 通れない
+    '/': false,  // 通れない
+    'C': false,  // 通れない
+    'D': false,  // 通れない
+    'J': false,  // 通れない
+    '?': false,  // 通れない
+    'W': false,  // 通れない
+  },
+  npcs: [
+    { id: 'elder', x: 7, y: 4, dir: 'down', color: '#888855', name: '村長', dialogue: ["かなとよ、よく来たな。", "魔物たちが突然現れ、人々をさらっていったんじゃ。", "まずは東にある「次の村」へ向かい、情報を集めるのじゃ！"] },
+    { id: 'innkeeper', x: 5, y: 9, dir: 'down', color: '#aa7744', name: '宿屋のおじさん', dialogue: ["宿屋へようこそ！", "一泊10Gで体を休めていけ。"], isInn: true },
+    { id: 'kid', x: 16, y: 9, dir: 'right', color: '#ffcc66', name: '村の子供', dialogue: ["東にあるのが次の村だよ！"] },
+    { id: 'npc_1780673355042', x: 3, y: 5, dir: 'right', color: '#aa7744', name: '武器屋', dialogue: ["こんにちは！"], counterTalk: true, isWeaponShop: true },
+    { id: 'npc_1780673371082', x: 19, y: 12, dir: 'left', color: '#aa7744', name: '宿', dialogue: ["こんにちは！"], counterTalk: true, isInn: true, innCost: 10 },
+  ],
   map: [
     'WWWWWWWWWWWWWWWWWWWWWWWWW',
     'WWWWWWWWWWWWWWWWWWWWWWWWW',
-    'WGGGGGGGGGGGGGGGGGGGGGGGW',
-    'WGHHHGGGGGGGGGGGGGHHHGGGW',
-    'WGHHHGGGGGGGGGGGGGHHHGGGW',
-    'WGGG!!!R##R#!!!GGGGGGGGGW',
-    'WGGGGGGGGGGGGGG!!!!GGGXGW',
-    'WGXGGGGIGGGGGGGGGG!GGGGGW',
-    'WGGGGGGGGRGGGGGGG!GGGGGGW',
-    'WGGGGGGGGRGGGGG!!GGGGGGGW',
-    'WGGG!!IGGRGG!!$HHHGGGGGGW',
-    'WGGG!!!!!#G!GGHHHHGGGGGGW',
-    'WGGG!GGGGRGGGGGGGGGGGGGGW',
-    'WGGG!GGGGGGGGGGGGG!!GGGGW',
-    'WGGG!GGGGGGGGGG!!!GGGGXGW',
-    'WGGG!GGGGGG!!!!GGGGGGGGGW',
-    'WGGGG!!!!!!GGGGGGGGGGGGGW',
-    'WGGGGGGGGGGGGGGGGGGGGGGGW',
-    'WGGGGGGGGGGGEGGGGGGGGGGGW',
+    'W@@@@@@@@@@@@@@@@@@@@@@@W',
+    'W@&&&%%%%%%%%%%%%%&&&%%%W',
+    'W@&&&%%%%%%%%%%%%%&&&%%%W',
+    'W@%%)))+**+*))>......8%%W',
+    'W@%%%%%%%%%%%%%)))4%%1(%W',
+    'W@(%%%%,%%%%%%%%%%5%%1%%W',
+    'W@%%%%%%%+%%%%%%%)6%%1%%W',
+    'W@%%%%%%%+%%%%%))%%%%1%%W',
+    'W@%%)),%%+%%))-&&&%=<1%%W',
+    'W@%%)))))*%)%%&:::...9%%W',
+    'W%0./..7%+%%%%%%%%%%%%%%W',
+    'W%1%4%%%%%%%%%%%%%))%%%%W',
+    'W%1%5%%%%%%%%%%)))%%%%(%W',
+    'W%1%5%%%%%%))))%%%%%CD%%W',
+    'W%1%6))))))%%%%%%CD%J?%%W',
+    'W%3....%%%%%%%%%%J?%%%%%W',
+    'W%%%%%%%%%%%E%%%%%%%%%%%W',
     'WWWWWWWWWWWWWWWWWWWWWWWWW'
   ].reverse()
 });

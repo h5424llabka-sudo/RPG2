@@ -235,7 +235,14 @@ function updateMap(dt) {
       }
     }
 
-    const npc = map.npcs.find(n=>n.alive && n.x===facingX && n.y===facingY);
+    // NPC検索: 正面1マス、または counterTalk NPCは2マス先まで検索
+    const facingX2 = p.x + (p.dir==='right'?2:p.dir==='left'?-2:0);
+    const facingY2 = p.y + (p.dir==='up'?2:p.dir==='down'?-2:0);
+    let npc = map.npcs.find(n=>n.alive && n.x===facingX && n.y===facingY);
+    if (!npc) {
+      // 2マス先に counterTalk NPCがいるか確認
+      npc = map.npcs.find(n=>n.alive && n.counterTalk && n.x===facingX2 && n.y===facingY2);
+    }
     if (npc) {
       if (npc.requiresBossDefeated && map.boss && !map.boss.defeated) {
         startDialogue(['（まだ強大な魔物の気配がする…！）', '（先にボスを倒さなきゃ！）'], npc, null);
@@ -251,8 +258,15 @@ function updateMap(dt) {
           }
         }
         if (npc.isInn) {
-          if (gs.gold>=10) { gs.gold-=10; gs.party.forEach(m=>{ m.hp=m.maxHp; m.mp=m.maxMp; }); startDialogue(['ぐっすり眠れた！','HP・MPが全回復した！'],null,null); }
-          else { startDialogue(['お金が足りないよ！','10Gひつようだよ。'],null,null); }
+          const innCost = npc.innCost || 10;
+          if (gs.gold>=innCost) { gs.gold-=innCost; gs.party.forEach(m=>{ m.hp=m.maxHp; m.mp=m.maxMp; }); startDialogue(['ぐっすり眠れた！','HP・MPが全回復した！'],null,null); }
+          else { startDialogue([`お金が足りないよ！`,`${innCost}G必要だよ。`],null,null); }
+        }
+        if (npc.isWeaponShop) {
+          openShop('weapon', npc.shopItems);
+        }
+        if (npc.isItemShop) {
+          openShop('item', npc.shopItems);
         }
       });
       return;
@@ -578,6 +592,69 @@ function craftGadget(gadgetId) {
   return true;
 }
 
+// ============================================================
+// お店システム
+// ============================================================
+
+// デフォルト商品リスト
+ const SHOP_ITEMS = {
+  weapon: [
+    { name: '銅の剣', price: 80, desc: '攻撃力+5の剣', effect: 'atk', power: 5 },
+    { name: '鉄の剤', price: 200, desc: '攻撃力+12の剤', effect: 'atk', power: 12 },
+    { name: '盾の凣', price: 60, desc: '防御力+4の盾', effect: 'def', power: 4 },
+    { name: '鉄の盾', price: 160, desc: '防御力+10の盾', effect: 'def', power: 10 },
+  ],
+  item: [
+    { name: 'やくそう', price: 30, desc: 'HPを 30 回復する', effect: 'heal', power: 30 },
+    { name: '高めのやくそう', price: 80, desc: 'HPを 80 回復する', effect: 'heal', power: 80 },
+    { name: 'エテル', price: 50, desc: 'MPを 30 回復する', effect: 'mp', power: 30 },
+    { name: '解毒草', price: 40, desc: '状態異常を回復する', effect: 'cure', power: 0 },
+  ],
+};
+
+function openShop(type, customItems) {
+  const items = customItems || SHOP_ITEMS[type] || SHOP_ITEMS.item;
+  GameState.scene = 'shop';
+  GameState.shopData = { type, items, selected: 0 };
+}
+
+function updateShop() {
+  const sd = GameState.shopData;
+  if (!sd) { GameState.scene = 'map'; return; }
+  if (Input.wasPressed('ArrowUp')) sd.selected = Math.max(0, sd.selected - 1);
+  if (Input.wasPressed('ArrowDown')) sd.selected = Math.min(sd.items.length - 1, sd.selected + 1);
+  if (isCancel()) { GameState.scene = 'map'; GameState.shopData = null; return; }
+  if (isConfirm()) {
+    const item = sd.items[sd.selected];
+    if (!item) return;
+    if (GameState.gold >= item.price) {
+      GameState.gold -= item.price;
+      // 購入効果を適用 (現ステータスにHP回復やATKボーナスなど)
+      if (item.effect === 'heal') {
+        const target = GameState.party[0];
+        if (target) target.hp = Math.min(target.maxHp, target.hp + item.power);
+      } else if (item.effect === 'mp') {
+        const target = GameState.party[0];
+        if (target) target.mp = Math.min(target.maxMp, target.mp + item.power);
+      } else if (item.effect === 'atk') {
+        GameState.party.forEach(m => { m.atk += item.power; });
+      } else if (item.effect === 'def') {
+        GameState.party.forEach(m => { m.def += item.power; });
+      } else if (item.effect === 'cure') {
+        GameState.party.forEach(m => { m.isBlind = false; m.isStunned = false; });
+      } else {
+        // その他はインベントリに追加
+        addItem(item.effect || 'herb', 1);
+      }
+      GameState.scene = 'map';
+      GameState.shopData = null;
+      startDialogue([`${item.name}を買った！`, `持ち金: ${GameState.gold}G`], null, null);
+    } else {
+      startDialogue(['お金が足りません…', `${item.price}G必要です。`], null, null);
+    }
+  }
+}
+
 function openMenu() {
   // 解放済みシステムに応じてメニュー項目を動的に構築
   const items = ['パーティ確認','もちもの'];
@@ -638,6 +715,7 @@ function gameLoop(timestamp) {
     case 'dialogue': updateDialogue(dt); break;
     case 'battle': updateBattle(dt); break;
     case 'menu': updateMenu(); break;
+    case 'shop': updateShop(); break;
     case 'gameover': if (isConfirm()) GameState.scene='title'; break;
     case 'ending': if (isConfirm()) GameState.scene='title'; break;
   }
@@ -648,6 +726,7 @@ function gameLoop(timestamp) {
     case 'dialogue': renderDialogue(); break;
     case 'battle': renderBattle(); break;
     case 'menu': renderMenu(); break;
+    case 'shop': renderShop(); break;
     case 'gameover': renderGameOver(); break;
     case 'ending': renderEnding(); break;
   }

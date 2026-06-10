@@ -13,64 +13,80 @@
     --accent: #3b82f6;
     --accent-hover: #60a5fa;
     --border: #334155;
+    --tab-active: #2563eb;
+    --danger: #ef4444;
+    --success: #22c55e;
+    --warning: #f59e0b;
   }
+  * { box-sizing: border-box; }
   body {
-    margin: 0; padding: 20px;
+    margin: 0; padding: 16px;
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Inter', -apple-system, sans-serif;
     display: flex; flex-direction: column; height: 100vh;
-    box-sizing: border-box;
   }
   .header {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 12px; flex-shrink: 0;
   }
-  .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+  .header h1 { margin: 0; font-size: 20px; font-weight: 700; }
+  .controls { display: flex; gap: 8px; align-items: center; }
   .controls select, .controls button {
     background: var(--panel-bg); color: var(--text-main);
-    border: 1px solid var(--border); padding: 8px 16px;
-    border-radius: 6px; font-size: 14px; cursor: pointer; outline: none;
+    border: 1px solid var(--border); padding: 7px 14px;
+    border-radius: 6px; font-size: 13px; cursor: pointer; outline: none;
+  }
+  .controls button.primary { background: var(--accent); border-color: var(--accent); font-weight: bold; }
+  .controls button.primary:hover { background: var(--accent-hover); }
+
+  /* タブ */
+  .tabs {
+    display: flex; gap: 2px; margin-bottom: 12px; flex-shrink: 0;
+    background: var(--panel-bg); border-radius: 10px; padding: 4px;
+    border: 1px solid var(--border);
+  }
+  .tab-btn {
+    flex: 1; padding: 8px; border: none; border-radius: 7px;
+    background: transparent; color: var(--text-muted);
+    font-size: 13px; font-weight: 600; cursor: pointer;
     transition: all 0.2s;
   }
-  .controls button { background: var(--accent); border-color: var(--accent); font-weight: bold; }
-  .controls button:hover { background: var(--accent-hover); transform: translateY(-1px); }
-  
-  .main-content {
-    display: flex; gap: 20px; flex: 1; min-height: 0;
+  .tab-btn.active {
+    background: var(--tab-active); color: #fff;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.4);
   }
+  .tab-btn:hover:not(.active) { background: rgba(255,255,255,0.07); color: var(--text-main); }
+
+  /* タブコンテンツ */
+  .tab-content { display: none; flex: 1; min-height: 0; }
+  .tab-content.active { display: flex; flex-direction: column; }
+
+  /* パネル共通 */
+  .main-content { display: flex; gap: 16px; flex: 1; min-height: 0; }
   .panel {
-    background: var(--panel-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    display: flex; flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    background: var(--panel-bg); border: 1px solid var(--border);
+    border-radius: 12px; display: flex; flex-direction: column;
+    overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
   }
   .panel-header {
-    padding: 12px 16px; border-bottom: 1px solid var(--border);
-    font-weight: 600; font-size: 14px; color: var(--text-muted);
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    font-weight: 600; font-size: 13px; color: var(--text-muted);
     background: rgba(0,0,0,0.1);
     display: flex; justify-content: space-between; align-items: center;
   }
-  .panel-header-controls {
-    display: flex; gap: 8px; align-items: center;
-  }
+  .panel-header-controls { display: flex; gap: 8px; align-items: center; }
   .panel-header-controls input[type="text"] {
     background: #0f172a; color: #f8fafc; border: 1px solid var(--border);
     padding: 4px 8px; border-radius: 4px; font-size: 12px; width: 150px;
   }
-  .panel-header-controls input[type="file"] {
-    font-size: 12px;
-  }
-  .panel-body {
-    flex: 1; overflow: auto; padding: 16px; position: relative;
-  }
-  
-  /* Tileset Panel */
-  .tileset-panel { width: 340px; flex-shrink: 0; }
+  .panel-header-controls input[type="file"] { font-size: 12px; }
+  .panel-body { flex: 1; overflow: auto; padding: 14px; position: relative; }
+
+  /* タイルセットパネル */
+  .tileset-panel { width: 320px; flex-shrink: 0; }
   .tileset-container { position: relative; display: inline-block; background: #000; }
-  #tilesetCanvas { cursor: crosshair; }
+  #tilesetCanvas { cursor: crosshair; display: block; }
   #tilesetCursor {
     position: absolute; pointer-events: none;
     border: 2px solid #ef4444; width: 32px; height: 32px;
@@ -80,106 +96,350 @@
     transition: transform 0.05s, width 0.05s, height 0.05s;
   }
 
-  /* Map Panel */
+  /* マップパネル */
   .map-panel { flex: 1; }
   .map-container { position: relative; display: inline-block; background: #000; }
-  #mapCanvas { cursor: crosshair; }
+  #mapCanvas { cursor: crosshair; display: block; }
 
-  /* Output Panel */
-  .output-panel { height: 200px; margin-top: 20px; flex-shrink: 0; }
+  /* 出力パネル */
+  .output-panel { height: 180px; margin-top: 14px; flex-shrink: 0; }
   #outputCode {
     width: 100%; height: 100%; box-sizing: border-box;
     background: #0b1120; color: #a7f3d0; border: none;
-    padding: 16px; font-family: 'Fira Code', monospace;
-    font-size: 13px; resize: none; outline: none;
+    padding: 14px; font-family: 'Fira Code', monospace;
+    font-size: 12px; resize: none; outline: none;
   }
+
+  /* --- 衝突判定タブ --- */
+  .passable-tab { display: flex; gap: 16px; flex: 1; min-height: 0; }
+  .passable-map-panel { flex: 1; }
+  .passable-list-panel { width: 300px; flex-shrink: 0; }
+  .passable-list { display: flex; flex-direction: column; gap: 6px; }
+  .passable-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .passable-item:hover { background: rgba(255,255,255,0.08); }
+  .tile-thumb { width: 32px; height: 32px; border-radius: 4px; flex-shrink: 0; border: 1px solid var(--border); }
+  .passable-item .tile-char { font-family: monospace; font-size: 16px; color: #6dd; width: 18px; }
+  .passable-item .tile-name { flex: 1; font-size: 13px; }
+  .toggle-switch {
+    position: relative; width: 44px; height: 22px; flex-shrink: 0;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: #334; border-radius: 22px;
+    transition: 0.2s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute; width: 16px; height: 16px;
+    left: 3px; top: 3px; background: white; border-radius: 50%;
+    transition: 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--success); }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(22px); }
+  .passable-label { font-size: 11px; color: var(--text-muted); width: 40px; }
+
+  /* --- NPC配置タブ --- */
+  .npc-tab { display: flex; gap: 16px; flex: 1; min-height: 0; }
+  .npc-map-panel { flex: 1; }
+  #npcMapCanvas { cursor: crosshair; display: block; }
+  .npc-list-panel { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; }
+  .npc-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+  .npc-list-item {
+    padding: 8px 12px; border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .npc-list-item:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
+  .npc-list-item .npc-color-dot {
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+  }
+  .npc-list-item .npc-item-info { flex: 1; }
+  .npc-list-item .npc-item-name { font-size: 13px; font-weight: 600; }
+  .npc-list-item .npc-item-pos { font-size: 11px; color: var(--text-muted); }
+  .npc-list-item .npc-item-role {
+    font-size: 10px; padding: 2px 6px; border-radius: 10px;
+    background: rgba(59,130,246,0.2); color: #60a5fa;
+  }
+  .npc-list-item.editing { border-color: var(--warning); background: rgba(245,158,11,0.1); }
+  .btn-small {
+    padding: 3px 8px; font-size: 11px; border-radius: 5px;
+    border: 1px solid var(--border); background: var(--panel-bg);
+    color: var(--text-main); cursor: pointer;
+  }
+  .btn-small.danger { border-color: var(--danger); color: var(--danger); }
+  .btn-small.danger:hover { background: rgba(239,68,68,0.1); }
+
+  /* ダイアログ */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #1e293b; border: 1px solid #475569;
+    border-radius: 16px; padding: 24px; width: 520px; max-width: 95vw;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  }
+  .modal h2 { margin: 0 0 20px; font-size: 18px; color: var(--text-main); }
+  .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .form-row label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .form-row input, .form-row select, .form-row textarea {
+    background: #0f172a; color: var(--text-main);
+    border: 1px solid var(--border); padding: 8px 10px;
+    border-radius: 7px; font-size: 13px; outline: none; width: 100%;
+    transition: border-color 0.2s;
+  }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+    border-color: var(--accent);
+  }
+  .form-row textarea { height: 90px; resize: vertical; font-family: inherit; }
+  .form-row-inline { display: flex; gap: 14px; }
+  .form-row-inline .form-row { flex: 1; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+  .modal-actions button {
+    padding: 9px 20px; border-radius: 7px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none;
+  }
+  .btn-cancel { background: var(--panel-bg); color: var(--text-muted); border: 1px solid var(--border) !important; }
+  .btn-save { background: var(--accent); color: white; }
+  .btn-delete { background: var(--danger); color: white; }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; }
+  .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); }
+  .checkbox-row label { font-size: 13px; color: var(--text-main); cursor: pointer; }
+
+  /* NPC配置時のモード切替 */
+  .npc-mode-bar {
+    display: flex; gap: 8px; padding: 8px 14px; border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.1); align-items: center;
+  }
+  .mode-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border); transition: all 0.15s;
+    background: transparent; color: var(--text-muted);
+  }
+  .mode-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .mode-hint { font-size: 11px; color: var(--text-muted); margin-left: 6px; }
+
+  small { color: var(--text-muted); font-size: 11px; display: block; margin-top: 4px; }
 </style>
 </head>
 <body>
   <div class="header">
-    <h1>マップチップ エディター</h1>
+    <h1>🗺 マップチップ エディター</h1>
     <div class="controls">
       <select id="mapSelect"></select>
-      <button id="btnExport">コードを出力</button>
+      <button class="primary" id="btnExport">コードを出力</button>
     </div>
   </div>
-  
-  <div class="main-content">
-    <div class="panel tileset-panel">
-      <div class="panel-header">
-        パレット
-        <div class="panel-header-controls">
-          <input type="file" id="dirInput" webkitdirectory directory style="display:none">
-          <button onclick="document.getElementById('dirInput').click()" title="assetsフォルダを選択すると中のPNGが一括追加されます" style="font-size: 12px; padding: 4px; background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 4px; cursor: pointer;">📁 フォルダ読込</button>
-          <select id="tilesetSelect" style="font-size: 12px; padding: 4px; max-width: 250px;">
-            <option value="assets/宿場町/BrightForest-A1.png">宿場町/BrightForest-A1.png</option>
-            <option value="assets/宿場町/Town-PostTown-C-1.png">宿場町/Town-PostTown-C-1.png</option>
-            <option value="assets/宿場町/TownBF-A2.png">宿場町/TownBF-A2.png</option>
-            <option value="assets/宿場町/TownBF-B.png">宿場町/TownBF-B.png</option>
-            <option value="assets/宿場町/TownBF-PostTown-A5-1.png">宿場町/TownBF-PostTown-A5-1.png</option>
-            <option value="assets/宿場町/TownBF-PostTown-A5-2.png">宿場町/TownBF-PostTown-A5-2.png</option>
-            <option value="assets/pipo-charachip001a.png">pipo-charachip001a.png</option>
-            <option value="assets/pipo-charachip009.png">pipo-charachip009.png</option>
-            <option value="assets/[A]Dirt1-Dirt2_pipo.png">[A]Dirt1-Dirt2_pipo.png</option>
-          </select>
+
+  <!-- タブ -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="tile">🎨 タイル描画</button>
+    <button class="tab-btn" data-tab="passable">⛔ 衝突判定</button>
+    <button class="tab-btn" data-tab="npc">👤 NPC配置</button>
+  </div>
+
+  <!-- タブ1: タイル描画 -->
+  <div class="tab-content active" id="tab-tile">
+    <div class="main-content">
+      <div class="panel tileset-panel">
+        <div class="panel-header">
+          パレット
+          <div class="panel-header-controls">
+            <input type="file" id="dirInput" webkitdirectory directory style="display:none">
+            <button onclick="document.getElementById('dirInput').click()" title="assetsフォルダを選択すると中のPNGが一括追加されます" style="font-size: 11px; padding: 4px 8px; background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border); border-radius: 4px; cursor: pointer;">📁 フォルダ読込</button>
+            <select id="tilesetSelect" style="font-size: 12px; padding: 4px; max-width: 200px;">
+              <option value="assets/宿場町/BrightForest-A1.png">宿場町/BrightForest-A1.png</option>
+              <option value="assets/宿場町/Town-PostTown-C-1.png">宿場町/Town-PostTown-C-1.png</option>
+              <option value="assets/宿場町/TownBF-A2.png">宿場町/TownBF-A2.png</option>
+              <option value="assets/宿場町/TownBF-B.png">宿場町/TownBF-B.png</option>
+              <option value="assets/宿場町/TownBF-PostTown-A5-1.png">宿場町/TownBF-PostTown-A5-1.png</option>
+              <option value="assets/宿場町/TownBF-PostTown-A5-2.png">宿場町/TownBF-PostTown-A5-2.png</option>
+              <option value="assets/pipo-charachip001a.png">pipo-charachip001a.png</option>
+              <option value="assets/pipo-charachip009.png">pipo-charachip009.png</option>
+              <option value="assets/[A]Dirt1-Dirt2_pipo.png">[A]Dirt1-Dirt2_pipo.png</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="tileset-container">
+            <canvas id="tilesetCanvas"></canvas>
+            <div id="tilesetCursor"></div>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 12px; line-height: 1.6;">
+            タイルをクリックして選択。<br>
+            ※新しいタイルには自動で文字が割り当てられます。
+          </p>
         </div>
       </div>
-      <div class="panel-body">
-        <div class="tileset-container">
-          <canvas id="tilesetCanvas"></canvas>
-          <div id="tilesetCursor"></div>
+
+      <div class="panel map-panel">
+        <div class="panel-header">
+          マップ（クリック＆ドラッグで描画）
+          <div class="panel-header-controls">
+            <button id="btnUndo" disabled>↩ 元に戻す</button>
+            <label style="font-size: 12px; cursor: pointer;">
+              <input type="checkbox" id="chkOverlay" checked> 重ね塗り
+            </label>
+            <select id="brushSize" style="font-size: 12px; padding: 4px;">
+              <option value="1">1x1</option>
+              <option value="2">2x2</option>
+              <option value="3">3x3</option>
+              <option value="4">4x4</option>
+            </select>
+          </div>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 16px; line-height: 1.5;">
-          使いたいタイルをクリックして選択してください。<br>
-          ※選択した新しいタイルには、自動的に未使用の文字（a, b, c...）が割り当てられます。
-        </p>
+        <div class="panel-body">
+          <div class="map-container">
+            <canvas id="mapCanvas"></canvas>
+          </div>
+        </div>
       </div>
     </div>
-    
-    <div class="panel map-panel">
-      <div class="panel-header">
-        マップ (クリック＆ドラッグで描画)
-        <div class="panel-header-controls">
-          <button id="btnUndo" disabled>元に戻す</button>
-          <label style="font-size: 12px; margin-left: 8px; cursor: pointer;">
-            <input type="checkbox" id="chkOverlay" checked> 背景を残す(重ね塗り)
-          </label>
-          <select id="brushSize" style="font-size: 12px; padding: 4px;">
-            <option value="1">1x1</option>
-            <option value="2">2x2</option>
-            <option value="3">3x3</option>
-            <option value="4">4x4</option>
-          </select>
+
+    <div class="panel output-panel">
+      <div class="panel-header">出力コード (js/data.js の末尾にコピペ)</div>
+      <textarea id="outputCode" readonly></textarea>
+    </div>
+  </div>
+
+  <!-- タブ2: 衝突判定 -->
+  <div class="tab-content" id="tab-passable">
+    <div class="passable-tab">
+      <div class="panel passable-map-panel">
+        <div class="panel-header">マップ（衝突判定のプレビュー）</div>
+        <div class="panel-body">
+          <div class="map-container" style="position:relative; display:inline-block;">
+            <canvas id="passableMapCanvas"></canvas>
+            <canvas id="passableOverlayCanvas" style="position:absolute;top:0;left:0;pointer-events:none;"></canvas>
+          </div>
         </div>
       </div>
-      <div class="panel-body">
-        <div class="map-container">
-          <canvas id="mapCanvas"></canvas>
+      <div class="panel passable-list-panel">
+        <div class="panel-header">タイル別 通行設定</div>
+        <div class="panel-body">
+          <div class="passable-list" id="passableList"></div>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);">
+            <small>💡 トグルをONにすると「通れる」、OFFだと「通れない」に設定されます。設定後「コードを出力」で反映されます。</small>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="panel output-panel">
-    <div class="panel-header">出力コード (これを js/data.js にコピペして更新します)</div>
-    <textarea id="outputCode" readonly></textarea>
+  <!-- タブ3: NPC配置 -->
+  <div class="tab-content" id="tab-npc">
+    <div class="npc-tab">
+      <div class="panel npc-map-panel">
+        <div class="npc-mode-bar">
+          <button class="mode-btn active" id="modePlace">➕ 配置</button>
+          <button class="mode-btn" id="modeEdit">✏ 選択/編集</button>
+          <button class="mode-btn" id="modeDelete">🗑 削除</button>
+          <span class="mode-hint" id="modeHint">マップをクリックしてNPCを配置</span>
+        </div>
+        <div class="panel-body">
+          <div class="map-container" style="position:relative; display:inline-block;">
+            <canvas id="npcMapCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="panel npc-list-panel">
+        <div class="panel-header">
+          配置済みNPC
+          <span id="npcCount" style="font-size:11px; background: rgba(59,130,246,0.2); padding: 2px 8px; border-radius: 10px;">0体</span>
+        </div>
+        <div class="panel-body" style="padding: 10px;">
+          <div class="npc-list" id="npcListEl"></div>
+          <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);">
+            <small>💡 「配置」モードでマップをクリック→ダイアログが開きます。「選択/編集」モードでNPCをクリックして再編集できます。</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NPC設定ダイアログ -->
+  <div class="modal-overlay" id="npcModal">
+    <div class="modal">
+      <h2 id="modalTitle">👤 NPC設定</h2>
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label>名前</label>
+          <input type="text" id="npcName" placeholder="例: 村長">
+        </div>
+        <div class="form-row">
+          <label>色（ドットの色）</label>
+          <input type="color" id="npcColor" value="#aa7744" style="height:38px; padding:2px;">
+        </div>
+      </div>
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label>向き</label>
+          <select id="npcDir">
+            <option value="down">下 (down)</option>
+            <option value="up">上 (up)</option>
+            <option value="left">左 (left)</option>
+            <option value="right">右 (right)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>役割（お店の種類）</label>
+          <select id="npcRole">
+            <option value="none">なし（一般NPC）</option>
+            <option value="isInn">🏠 宿屋</option>
+            <option value="isWeaponShop">⚔ 武器屋</option>
+            <option value="isItemShop">🧪 道具屋</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row" id="innCostRow" style="display:none;">
+        <label>宿泊料金 (G)</label>
+        <input type="number" id="npcInnCost" value="10" min="1" max="9999">
+      </div>
+      <div class="form-row">
+        <div class="checkbox-row">
+          <input type="checkbox" id="npcCounterTalk">
+          <label for="npcCounterTalk">カウンター越しで会話できる（2マス先まで話しかけ可）</label>
+        </div>
+        <small>※ 店員がカウンター後ろにいる場合にONにしてください</small>
+      </div>
+      <div class="form-row">
+        <label>会話文（1行 = 1ページ）</label>
+        <textarea id="npcDialogue" placeholder="いらっしゃいませ！&#10;何かお入用ですか？&#10;またのお越しをお待ちしております！"></textarea>
+        <small>改行で複数ページに分かれます</small>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-actions btn-delete" id="btnDeleteNpc" style="display:none;">🗑 削除</button>
+        <button class="modal-actions btn-cancel" id="btnCancelNpc">キャンセル</button>
+        <button class="modal-actions btn-save" id="btnSaveNpc">保存</button>
+      </div>
+    </div>
   </div>
 
   <script src="js/data.js"></script>
-  <!-- バッチファイルで生成される画像リスト（存在しない場合は無視されます） -->
+  <!-- バッチファイルで生成される画像リスト -->
   <script src="js/assets_list.js" onerror="console.log('assets_list.js not found, skipping auto-load')"></script>
   <script>
     const TILE_SIZE = 32;
     let tilesetImg = null;
-    
+
     const tsCanvas = document.getElementById('tilesetCanvas');
     const tsCtx = tsCanvas.getContext('2d');
     const tsCursor = document.getElementById('tilesetCursor');
     const tilesetSelect = document.getElementById('tilesetSelect');
-    
+
     const mapCanvas = document.getElementById('mapCanvas');
     const mapCtx = mapCanvas.getContext('2d');
-    
+
     const mapSelect = document.getElementById('mapSelect');
     const outputCode = document.getElementById('outputCode');
     const btnExport = document.getElementById('btnExport');
@@ -190,9 +450,10 @@
     let isDrawing = false;
     let isInitialized = false;
     let history = [];
-    
-    // 現在の TILE_ID から逆引きマップを作成
-    // 使用可能な新キャラクター候補（数千種類のユニコード文字をサポートして上限を無くす）
+
+    // ============================================================
+    // タイル文字管理
+    // ============================================================
     const usedChars = new Set(Object.keys(TILE_ID));
     const availableChars = [];
     for (let i = 33; i <= 8000; i++) {
@@ -204,17 +465,29 @@
     let nextCharIdx = 0;
 
     const loadedImages = {};
-    
+
+    // ============================================================
+    // 衝突判定 (passable) の上書きセット
+    // ============================================================
+    let passableOverrides = {}; // { charOrType: true/false }
+
+    // ============================================================
+    // NPC 配置データ
+    // ============================================================
+    let editorNpcs = []; // 現在のマップのNPC配置リスト
+    let npcEditIndex = -1; // 編集中のNPCインデックス (-1 = 新規)
+    let npcMode = 'place'; // 'place' | 'edit' | 'delete'
+
+    // ============================================================
+    // タイルセット読み込み
+    // ============================================================
     function updateTilesetCanvas() {
       if (!tilesetImg) return;
       tsCanvas.width = tilesetImg.width;
       tsCanvas.height = tilesetImg.height;
       tsCtx.drawImage(tilesetImg, 0, 0);
-      if (!isInitialized) {
-        init();
-        isInitialized = true;
-      }
-      if (currentMap) renderMap();
+      if (!isInitialized) { init(); isInitialized = true; }
+      if (currentMap) { renderTileMap(); }
     }
 
     function loadSelectedTileset() {
@@ -224,52 +497,44 @@
         img.src = src;
         loadedImages[src] = img;
         img.onload = () => {
-          if (tilesetSelect.value === src) {
-            tilesetImg = img;
-            updateTilesetCanvas();
-          }
-          renderMap();
+          if (tilesetSelect.value === src) { tilesetImg = img; updateTilesetCanvas(); }
+          renderTileMap();
         };
-        img.onerror = () => {
-          console.warn("Failed to load: " + src);
-        };
+        img.onerror = () => console.warn("Failed to load: " + src);
       } else {
         if (loadedImages[src].complete) {
           tilesetImg = loadedImages[src];
           updateTilesetCanvas();
         } else {
           loadedImages[src].addEventListener('load', () => {
-            if (tilesetSelect.value === src) {
-              tilesetImg = loadedImages[src];
-              updateTilesetCanvas();
-            }
+            if (tilesetSelect.value === src) { tilesetImg = loadedImages[src]; updateTilesetCanvas(); }
           });
         }
       }
     }
-    
+
     loadSelectedTileset();
 
+    // ============================================================
+    // 初期化
+    // ============================================================
     function init() {
-      // マップ選択のプルダウンを初期化
       for (let mapId in MAP_DATA) {
         let opt = document.createElement('option');
         opt.value = mapId;
         opt.textContent = MAP_DATA[mapId].name + ` (${mapId})`;
         mapSelect.appendChild(opt);
       }
-      
+
       mapSelect.addEventListener('change', (e) => loadMap(e.target.value));
       if (mapSelect.options.length > 0) loadMap(mapSelect.options[0].value);
-      
-      // 自動生成されたASSETS_LISTがあれば、プルダウンに追加
+
+      // ASSETS_LIST対応
       if (typeof ASSETS_LIST !== 'undefined') {
         let addedCount = 0;
         ASSETS_LIST.forEach(path => {
           let exists = false;
-          for(let opt of tilesetSelect.options) {
-            if (opt.value === path) { exists = true; break; }
-          }
+          for (let opt of tilesetSelect.options) { if (opt.value === path) { exists = true; break; } }
           if (!exists) {
             const opt = document.createElement('option');
             opt.value = path;
@@ -281,12 +546,9 @@
         if (addedCount > 0) console.log(`Auto-loaded ${addedCount} new assets.`);
       }
 
-      // パレットの画像切り替え処理
-      tilesetSelect.addEventListener('change', () => {
-        loadSelectedTileset();
-      });
-      
-      // フォルダからPNGを一括追加
+      tilesetSelect.addEventListener('change', () => loadSelectedTileset());
+
+      // フォルダ一括追加
       const dirInput = document.getElementById('dirInput');
       dirInput.addEventListener('change', (e) => {
         const files = e.target.files;
@@ -296,169 +558,191 @@
           if (file.name.endsWith('.png')) {
             let path = file.webkitRelativePath;
             const assetsIndex = path.indexOf('assets/');
-            if (assetsIndex !== -1) {
-              path = path.substring(assetsIndex);
-            } else {
-              path = 'assets/' + file.name;
-            }
-            
+            path = assetsIndex !== -1 ? path.substring(assetsIndex) : 'assets/' + file.name;
             let exists = false;
-            for(let opt of tilesetSelect.options) {
-              if (opt.value === path) { exists = true; break; }
-            }
-            
+            for (let opt of tilesetSelect.options) { if (opt.value === path) { exists = true; break; } }
             if (!exists) {
               const opt = document.createElement('option');
               opt.value = path;
               opt.textContent = path.replace('assets/', '');
               tilesetSelect.appendChild(opt);
-              
-              // キャッシュ用にFileオブジェクトのURLを一時登録
               const url = URL.createObjectURL(file);
               const img = new Image();
               img.src = url;
               loadedImages[path] = img;
-              
               addedCount++;
             }
           }
         }
-        if (addedCount > 0) {
-           alert(`${addedCount}件の新しい画像を追加しました！プルダウンから選択できます。`);
-        }
-        dirInput.value = ''; // リセット
+        if (addedCount > 0) alert(`${addedCount}件の新しい画像を追加しました！`);
+        dirInput.value = '';
       });
-      
-      // パレットのクリック選択処理
+
+      // タイルセット選択
       tsCanvas.addEventListener('mousedown', (e) => {
         const rect = tsCanvas.getBoundingClientRect();
         const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
         const y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
         selectTile(x, y);
       });
-      
-      // マップの描画処理
-      mapCanvas.addEventListener('mousedown', (e) => { 
-        isDrawing = true; 
-        saveState();
-        paintMap(e); 
-      });
-      window.addEventListener('mouseup', () => { 
-        isDrawing = false; 
-      });
-      mapCanvas.addEventListener('mousemove', (e) => { if(isDrawing) paintMap(e); });
-      
+
+      // マップ描画（タイル描画タブ）
+      mapCanvas.addEventListener('mousedown', (e) => { isDrawing = true; saveState(); paintMap(e); });
+      window.addEventListener('mouseup', () => { isDrawing = false; });
+      mapCanvas.addEventListener('mousemove', (e) => { if (isDrawing) paintMap(e); });
+
       document.getElementById('btnUndo').addEventListener('click', undo);
-      window.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'z') {
-           undo();
+      window.addEventListener('keydown', (e) => { if (e.ctrlKey && e.key === 'z') undo(); });
+
+      btnExport.addEventListener('click', generateCode);
+
+      // タブ切替
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          const tabId = 'tab-' + btn.dataset.tab;
+          document.getElementById(tabId).classList.add('active');
+          if (btn.dataset.tab === 'passable') refreshPassableTab();
+          if (btn.dataset.tab === 'npc') refreshNpcTab();
+        });
+      });
+
+      // NPC配置タブのモードボタン
+      document.getElementById('modePlace').addEventListener('click', () => setNpcMode('place'));
+      document.getElementById('modeEdit').addEventListener('click', () => setNpcMode('edit'));
+      document.getElementById('modeDelete').addEventListener('click', () => setNpcMode('delete'));
+
+      // NPC配置マップクリック
+      const npcMapCanvas = document.getElementById('npcMapCanvas');
+      npcMapCanvas.addEventListener('click', (e) => {
+        if (!currentMap) return;
+        const rect = npcMapCanvas.getBoundingClientRect();
+        const tx = Math.floor((e.clientX - rect.left) / TILE_SIZE);
+        const ty = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+        // エディタ坐標（上から下）をゲームY坐標（下から上）に変換
+        const gameY = currentMap.h - 1 - ty;
+        if (npcMode === 'place') openNpcDialog(tx, gameY, -1);
+        else if (npcMode === 'edit') {
+          const idx = editorNpcs.findIndex(n => n.x === tx && n.y === gameY);
+          if (idx >= 0) openNpcDialog(tx, gameY, idx);
+        } else if (npcMode === 'delete') {
+          const idx = editorNpcs.findIndex(n => n.x === tx && n.y === gameY);
+          if (idx >= 0) { editorNpcs.splice(idx, 1); renderNpcMap(); updateNpcList(); }
         }
       });
-      
-      btnExport.addEventListener('click', generateCode);
+
+      // NPC Modalボタン
+      document.getElementById('btnSaveNpc').addEventListener('click', saveNpc);
+      document.getElementById('btnCancelNpc').addEventListener('click', () => closeNpcModal());
+      document.getElementById('btnDeleteNpc').addEventListener('click', () => {
+        if (npcEditIndex >= 0) { editorNpcs.splice(npcEditIndex, 1); renderNpcMap(); updateNpcList(); }
+        closeNpcModal();
+      });
+
+      // 役割セレクト変更でinnCostRowを表示/非表示
+      document.getElementById('npcRole').addEventListener('change', () => {
+        document.getElementById('innCostRow').style.display =
+          document.getElementById('npcRole').value === 'isInn' ? 'block' : 'none';
+      });
     }
-    
+
+    // ============================================================
+    // マップ読み込み (共通)
+    // ============================================================
+    function loadMap(mapId) {
+      currentMapId = mapId;
+      const srcMap = MAP_DATA[mapId];
+      currentMap = {
+        ...srcMap,
+        tiles: [...srcMap.tiles].reverse().map(row => row.split(''))
+      };
+      history = [];
+      document.getElementById('btnUndo').disabled = true;
+
+      mapCanvas.width = currentMap.w * TILE_SIZE;
+      mapCanvas.height = currentMap.h * TILE_SIZE;
+
+      // passable overridesをリセット
+      passableOverrides = {};
+
+      // NPC定義を読み込む
+      editorNpcs = (NPC_DEFS[mapId] || []).map(n => ({ ...n }));
+
+      renderTileMap();
+
+      // 衝突判定・NPC タブがアクティブなら再描画
+      if (document.getElementById('tab-passable').classList.contains('active')) refreshPassableTab();
+      if (document.getElementById('tab-npc').classList.contains('active')) refreshNpcTab();
+    }
+
+    // ============================================================
+    // タイル描画タブ
+    // ============================================================
     function saveState() {
       if (!currentMap) return;
       history.push(currentMap.tiles.map(row => [...row]));
       if (history.length > 50) history.shift();
       document.getElementById('btnUndo').disabled = false;
     }
-
     function undo() {
       if (history.length === 0 || !currentMap) return;
       currentMap.tiles = history.pop();
-      renderMap();
+      renderTileMap();
       if (history.length === 0) document.getElementById('btnUndo').disabled = true;
     }
-    
-    function loadMap(mapId) {
-      currentMapId = mapId;
-      const srcMap = MAP_DATA[mapId];
-      // 上下反転（reverse）を解除して二次元配列にする
-      currentMap = {
-        ...srcMap,
-        tiles: [...srcMap.tiles].reverse().map(row => row.split(''))
-      };
-      
-      history = [];
-      document.getElementById('btnUndo').disabled = true;
-      mapCanvas.width = currentMap.w * TILE_SIZE;
-      mapCanvas.height = currentMap.h * TILE_SIZE;
-      renderMap();
-    }
-    
+
     function selectTile(x, y) {
-      if (x < 0 || y < 0 || x >= tilesetImg.width/TILE_SIZE || y >= tilesetImg.height/TILE_SIZE) return;
+      if (x < 0 || y < 0 || x >= tilesetImg.width / TILE_SIZE || y >= tilesetImg.height / TILE_SIZE) return;
       selectedTile = { sx: x * TILE_SIZE, sy: y * TILE_SIZE };
       tsCursor.style.transform = `translate(${selectedTile.sx}px, ${selectedTile.sy}px)`;
       tsCursor.style.width = `${TILE_SIZE}px`;
       tsCursor.style.height = `${TILE_SIZE}px`;
     }
-    
-    let alertedNoChars = false;
 
+    let alertedNoChars = false;
     function getTileCharForSelection(bgChar) {
       const isOverlay = document.getElementById('chkOverlay').checked;
-      
       const src = tilesetSelect.value;
       const sx = selectedTile.sx;
       const sy = selectedTile.sy;
-      
-      // 同じ画像・座標のタイルを同じ場所に塗ろうとした場合、無限に重なるのを防ぐ
       if (bgChar) {
         let bgType = TILE_ID[bgChar];
         let bgCfg = ASSET_CONFIG.tiles[bgType];
-        if (bgCfg && bgCfg.src === src && bgCfg.sx === sx && bgCfg.sy === sy) {
-          return bgChar;
-        }
+        if (bgCfg && bgCfg.src === src && bgCfg.sx === sx && bgCfg.sy === sy) return bgChar;
       }
-
       const baseChar = (isOverlay && bgChar) ? bgChar : undefined;
-      
-      // 既に同じ構成のタイルがあるか探す
       for (let char of Object.keys(TILE_ID)) {
         let type = TILE_ID[char];
         let cfg = ASSET_CONFIG.tiles[type];
-        if (cfg && cfg.src === src && cfg.sx === sx && cfg.sy === sy && cfg.base === baseChar) {
-          return char;
-        }
+        if (cfg && cfg.src === src && cfg.sx === sx && cfg.sy === sy && cfg.base === baseChar) return char;
       }
-      
       const char = availableChars[nextCharIdx++];
-      if (!char) { 
-        if (!alertedNoChars) {
-          alert('これ以上新しい種類のタイルは使えません！'); 
-          alertedNoChars = true;
-        }
-        return null; 
+      if (!char) {
+        if (!alertedNoChars) { alert('これ以上新しい種類のタイルは使えません！'); alertedNoChars = true; }
+        return null;
       }
-      
       TILE_ID[char] = char;
       ASSET_CONFIG.tiles[char] = { src, sx, sy };
       if (baseChar) ASSET_CONFIG.tiles[char].base = baseChar;
-      
       return char;
     }
-    
+
     function paintMap(e) {
       if (!currentMap) return;
       const rect = mapCanvas.getBoundingClientRect();
       const tx = Math.floor((e.clientX - rect.left) / TILE_SIZE);
       const ty = Math.floor((e.clientY - rect.top) / TILE_SIZE);
-      
       const brushSize = parseInt(document.getElementById('brushSize').value, 10);
       let painted = false;
-
       for (let oy = 0; oy < brushSize; oy++) {
         for (let ox = 0; ox < brushSize; ox++) {
-          const targetX = tx + ox;
-          const targetY = ty + oy;
+          const targetX = tx + ox, targetY = ty + oy;
           if (targetX >= 0 && targetX < currentMap.w && targetY >= 0 && targetY < currentMap.h) {
             const bgChar = currentMap.tiles[targetY][targetX];
             const char = getTileCharForSelection(bgChar);
             if (!char) continue;
-            
             if (currentMap.tiles[targetY][targetX] !== char) {
               currentMap.tiles[targetY][targetX] = char;
               painted = true;
@@ -466,64 +750,410 @@
           }
         }
       }
-      if (painted) renderMap();
+      if (painted) renderTileMap();
     }
-    
+
     function drawFallbackTile(ctx, type, px, py) {
       const cfg = ASSET_CONFIG.tiles[type];
-      if (cfg && cfg.color) {
-        ctx.fillStyle = cfg.color;
-        ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
-      } else {
-        ctx.fillStyle = '#333';
-        ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
-      }
+      ctx.fillStyle = (cfg && cfg.color) ? cfg.color : '#333';
+      ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
     }
-    
-    function drawEditorTile(char, px, py) {
+
+    function drawEditorTile(ctx, char, px, py) {
       let type = TILE_ID[char];
       if (!type) type = 'grass';
       const cfg = ASSET_CONFIG.tiles[type];
-      
       if (cfg && cfg.src && cfg.sx !== undefined) {
-        if (cfg.base) drawEditorTile(cfg.base, px, py);
-        
+        if (cfg.base) drawEditorTile(ctx, cfg.base, px, py);
         const img = loadedImages[cfg.src];
-        if (img && img.complete) {
-          mapCtx.drawImage(img, cfg.sx, cfg.sy, TILE_SIZE, TILE_SIZE, px, py, TILE_SIZE, TILE_SIZE);
+        if (img && img.complete && img.naturalWidth > 0) {
+          ctx.drawImage(img, cfg.sx, cfg.sy, TILE_SIZE, TILE_SIZE, px, py, TILE_SIZE, TILE_SIZE);
         } else if (!img) {
           const newImg = new Image();
           newImg.src = cfg.src;
           loadedImages[cfg.src] = newImg;
-          newImg.onload = () => renderMap();
+          newImg.onload = () => { renderTileMap(); refreshPassableTab(); renderNpcMap(); };
+        } else {
+          drawFallbackTile(ctx, type, px, py);
         }
       } else {
-        drawFallbackTile(mapCtx, type, px, py);
+        drawFallbackTile(ctx, type, px, py);
       }
     }
 
-    function renderMap() {
+    function renderTileMap() {
+      if (!currentMap) return;
       mapCtx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
       for (let y = 0; y < currentMap.h; y++) {
         for (let x = 0; x < currentMap.w; x++) {
-          const char = currentMap.tiles[y][x];
-          const px = x * TILE_SIZE;
-          const py = y * TILE_SIZE;
-          drawEditorTile(char, px, py);
+          drawEditorTile(mapCtx, currentMap.tiles[y][x], x * TILE_SIZE, y * TILE_SIZE);
         }
       }
     }
-    
-    function generateCode() {
-      const tilesArr = currentMap.tiles.map(row => `'${row.join('')}'`);
-      
-      const usedInMap = new Set();
-      for (let row of currentMap.tiles) {
-        for (let char of row) {
-          usedInMap.add(char);
+
+    // ============================================================
+    // 衝突判定タブ
+    // ============================================================
+    function getPassableForChar(char) {
+      if (char in passableOverrides) return passableOverrides[char];
+      const type = TILE_ID[char];
+      if (type !== undefined && type in PASSABLE) return PASSABLE[type];
+      // カスタムタイルはデフォルトtrue
+      return true;
+    }
+
+    function refreshPassableTab() {
+      if (!currentMap) return;
+      const canvas = document.getElementById('passableMapCanvas');
+      const overlay = document.getElementById('passableOverlayCanvas');
+      canvas.width = currentMap.w * TILE_SIZE;
+      canvas.height = currentMap.h * TILE_SIZE;
+      overlay.width = currentMap.w * TILE_SIZE;
+      overlay.height = currentMap.h * TILE_SIZE;
+      const ctx2 = canvas.getContext('2d');
+      const octx = overlay.getContext('2d');
+
+      // タイルを描画
+      for (let y = 0; y < currentMap.h; y++) {
+        for (let x = 0; x < currentMap.w; x++) {
+          drawEditorTile(ctx2, currentMap.tiles[y][x], x * TILE_SIZE, y * TILE_SIZE);
         }
       }
-      
+
+      // オーバーレイ: 通れないタイルを赤く
+      octx.clearRect(0, 0, overlay.width, overlay.height);
+      for (let y = 0; y < currentMap.h; y++) {
+        for (let x = 0; x < currentMap.w; x++) {
+          const char = currentMap.tiles[y][x];
+          const passable = getPassableForChar(char);
+          if (!passable) {
+            octx.fillStyle = 'rgba(239,68,68,0.35)';
+            octx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+          }
+        }
+      }
+
+      // リストを更新
+      buildPassableList();
+    }
+
+    function buildPassableList() {
+      if (!currentMap) return;
+      const usedInMap = new Set();
+      for (let row of currentMap.tiles) {
+        for (let char of row) usedInMap.add(char);
+      }
+
+      const listEl = document.getElementById('passableList');
+      listEl.innerHTML = '';
+
+      // タイルをサムネイルごとに一覧化（重複スキップ）
+      const seen = new Set();
+      for (let char of usedInMap) {
+        const type = TILE_ID[char];
+        if (seen.has(char)) continue;
+        seen.add(char);
+
+        const passable = getPassableForChar(char);
+        const typeName = type || char;
+
+        const item = document.createElement('div');
+        item.className = 'passable-item';
+
+        // サムネイルcanvas
+        const thumb = document.createElement('canvas');
+        thumb.className = 'tile-thumb';
+        thumb.width = 32; thumb.height = 32;
+        drawEditorTile(thumb.getContext('2d'), char, 0, 0);
+        item.appendChild(thumb);
+
+        // 文字
+        const charSpan = document.createElement('span');
+        charSpan.className = 'tile-char';
+        charSpan.textContent = char;
+        item.appendChild(charSpan);
+
+        // 名前
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'tile-name';
+        nameSpan.textContent = typeName;
+        item.appendChild(nameSpan);
+
+        // ラベル
+        const passLabel = document.createElement('span');
+        passLabel.className = 'passable-label';
+        passLabel.textContent = passable ? '通れる' : '通れない';
+        passLabel.style.color = passable ? 'var(--success)' : 'var(--danger)';
+        item.appendChild(passLabel);
+
+        // トグル
+        const toggle = document.createElement('label');
+        toggle.className = 'toggle-switch';
+        const inp = document.createElement('input');
+        inp.type = 'checkbox';
+        inp.checked = passable;
+        inp.addEventListener('change', () => {
+          passableOverrides[char] = inp.checked;
+          passLabel.textContent = inp.checked ? '通れる' : '通れない';
+          passLabel.style.color = inp.checked ? 'var(--success)' : 'var(--danger)';
+          refreshPassableOverlay();
+        });
+        const slider = document.createElement('div');
+        slider.className = 'toggle-slider';
+        toggle.appendChild(inp);
+        toggle.appendChild(slider);
+        item.appendChild(toggle);
+
+        listEl.appendChild(item);
+      }
+    }
+
+    function refreshPassableOverlay() {
+      const overlay = document.getElementById('passableOverlayCanvas');
+      if (!overlay || !currentMap) return;
+      const octx = overlay.getContext('2d');
+      octx.clearRect(0, 0, overlay.width, overlay.height);
+      for (let y = 0; y < currentMap.h; y++) {
+        for (let x = 0; x < currentMap.w; x++) {
+          const char = currentMap.tiles[y][x];
+          const passable = getPassableForChar(char);
+          if (!passable) {
+            octx.fillStyle = 'rgba(239,68,68,0.35)';
+            octx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+          }
+        }
+      }
+    }
+
+    // ============================================================
+    // NPC配置タブ
+    // ============================================================
+    function setNpcMode(mode) {
+      npcMode = mode;
+      document.getElementById('modePlace').classList.toggle('active', mode === 'place');
+      document.getElementById('modeEdit').classList.toggle('active', mode === 'edit');
+      document.getElementById('modeDelete').classList.toggle('active', mode === 'delete');
+      const hints = {
+        place: 'マップをクリックしてNPCを配置',
+        edit: 'NPCをクリックして設定を編集',
+        delete: 'NPCをクリックして削除'
+      };
+      document.getElementById('modeHint').textContent = hints[mode] || '';
+    }
+
+    function refreshNpcTab() {
+      renderNpcMap();
+      updateNpcList();
+    }
+
+    function renderNpcMap() {
+      if (!currentMap) return;
+      const npcCanvas = document.getElementById('npcMapCanvas');
+      npcCanvas.width = currentMap.w * TILE_SIZE;
+      npcCanvas.height = currentMap.h * TILE_SIZE;
+      const ctx2 = npcCanvas.getContext('2d');
+
+      for (let y = 0; y < currentMap.h; y++) {
+        for (let x = 0; x < currentMap.w; x++) {
+          drawEditorTile(ctx2, currentMap.tiles[y][x], x * TILE_SIZE, y * TILE_SIZE);
+        }
+      }
+
+      // NPCを描画
+      editorNpcs.forEach((npc, idx) => {
+        const px = npc.x * TILE_SIZE;
+        // npc.yはゲームY坐標（下から上）をエディタ屋表示Y（上から下）に変換
+        const visualY = currentMap.h - 1 - npc.y;
+        const py = visualY * TILE_SIZE;
+        // 人型アイコン
+        ctx2.fillStyle = npc.color || '#aa7744';
+        ctx2.beginPath();
+        ctx2.arc(px + 16, py + 10, 7, 0, Math.PI * 2);
+        ctx2.fill();
+        ctx2.fillRect(px + 10, py + 17, 12, 12);
+
+        // カウンタートークマーク
+        if (npc.counterTalk) {
+          ctx2.fillStyle = '#facc15';
+          ctx2.font = 'bold 10px sans-serif';
+          ctx2.textAlign = 'center';
+          ctx2.fillText('⟺', px + 16, py + 5);
+        }
+
+        // ロールバッジ
+        let badge = '';
+        if (npc.isInn) badge = '🏠';
+        else if (npc.isWeaponShop) badge = '⚔';
+        else if (npc.isItemShop) badge = '🧪';
+        if (badge) {
+          ctx2.font = '12px sans-serif';
+          ctx2.textAlign = 'center';
+          ctx2.fillText(badge, px + 24, py + 12);
+        }
+
+        // 名前
+        ctx2.fillStyle = 'rgba(0,0,0,0.65)';
+        ctx2.fillRect(px - 2, py - 12, TILE_SIZE + 4, 12);
+        ctx2.fillStyle = '#fff';
+        ctx2.font = '9px sans-serif';
+        ctx2.textAlign = 'center';
+        ctx2.fillText(npc.name || '?', px + 16, py - 2);
+      });
+    }
+
+    function updateNpcList() {
+      const listEl = document.getElementById('npcListEl');
+      const countEl = document.getElementById('npcCount');
+      listEl.innerHTML = '';
+      countEl.textContent = `${editorNpcs.length}体`;
+
+      editorNpcs.forEach((npc, idx) => {
+        const item = document.createElement('div');
+        item.className = 'npc-list-item';
+
+        const dot = document.createElement('div');
+        dot.className = 'npc-color-dot';
+        dot.style.background = npc.color || '#888';
+
+        const info = document.createElement('div');
+        info.className = 'npc-item-info';
+        const name = document.createElement('div');
+        name.className = 'npc-item-name';
+        name.textContent = npc.name || '名前なし';
+        const pos = document.createElement('div');
+        pos.className = 'npc-item-pos';
+        pos.textContent = `(${npc.x}, ${npc.y})`;
+        if (npc.counterTalk) pos.textContent += ' ⟺';
+        info.appendChild(name);
+        info.appendChild(pos);
+
+        item.appendChild(dot);
+        item.appendChild(info);
+
+        let roleLabel = '';
+        if (npc.isInn) roleLabel = '宿屋';
+        else if (npc.isWeaponShop) roleLabel = '武器屋';
+        else if (npc.isItemShop) roleLabel = '道具屋';
+        if (roleLabel) {
+          const role = document.createElement('span');
+          role.className = 'npc-item-role';
+          role.textContent = roleLabel;
+          item.appendChild(role);
+        }
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn-small';
+        editBtn.textContent = '✏';
+        editBtn.title = '編集';
+        editBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openNpcDialog(npc.x, npc.y, idx);
+        });
+        item.appendChild(editBtn);
+
+        item.addEventListener('click', () => openNpcDialog(npc.x, npc.y, idx));
+        listEl.appendChild(item);
+      });
+    }
+
+    function openNpcDialog(x, y, editIdx) {
+      npcEditIndex = editIdx;
+      const modal = document.getElementById('npcModal');
+      const title = document.getElementById('modalTitle');
+      const delBtn = document.getElementById('btnDeleteNpc');
+
+      if (editIdx >= 0) {
+        const npc = editorNpcs[editIdx];
+        title.textContent = `✏ NPC編集 (${npc.name || '?'})`;
+        document.getElementById('npcName').value = npc.name || '';
+        document.getElementById('npcColor').value = npc.color || '#aa7744';
+        document.getElementById('npcDir').value = npc.dir || 'down';
+        document.getElementById('npcDialogue').value = (npc.dialogue || []).join('\n');
+        document.getElementById('npcCounterTalk').checked = !!npc.counterTalk;
+        // 役割
+        let role = 'none';
+        if (npc.isInn) role = 'isInn';
+        else if (npc.isWeaponShop) role = 'isWeaponShop';
+        else if (npc.isItemShop) role = 'isItemShop';
+        document.getElementById('npcRole').value = role;
+        document.getElementById('npcInnCost').value = npc.innCost || 10;
+        document.getElementById('innCostRow').style.display = role === 'isInn' ? 'block' : 'none';
+        delBtn.style.display = 'block';
+      } else {
+        title.textContent = `➕ NPC配置 (${x}, ${y})`;
+        document.getElementById('npcName').value = '';
+        document.getElementById('npcColor').value = '#aa7744';
+        document.getElementById('npcDir').value = 'down';
+        document.getElementById('npcDialogue').value = 'こんにちは！';
+        document.getElementById('npcCounterTalk').checked = false;
+        document.getElementById('npcRole').value = 'none';
+        document.getElementById('npcInnCost').value = 10;
+        document.getElementById('innCostRow').style.display = 'none';
+        delBtn.style.display = 'none';
+        // 座標を一時保存
+        modal._pendingX = x;
+        modal._pendingY = y;
+      }
+
+      modal.classList.add('open');
+    }
+
+    function saveNpc() {
+      const modal = document.getElementById('npcModal');
+      const name = document.getElementById('npcName').value.trim() || '名前なし';
+      const color = document.getElementById('npcColor').value;
+      const dir = document.getElementById('npcDir').value;
+      const dialogueText = document.getElementById('npcDialogue').value;
+      const dialogue = dialogueText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const counterTalk = document.getElementById('npcCounterTalk').checked;
+      const role = document.getElementById('npcRole').value;
+      const innCost = parseInt(document.getElementById('npcInnCost').value, 10) || 10;
+
+      const npcData = {
+        id: `npc_${Date.now()}`,
+        name, color, dir, dialogue,
+        counterTalk: counterTalk || undefined,
+        isInn: role === 'isInn' || undefined,
+        isWeaponShop: role === 'isWeaponShop' || undefined,
+        isItemShop: role === 'isItemShop' || undefined,
+        innCost: role === 'isInn' ? innCost : undefined,
+      };
+      // undefinedキーを削除
+      Object.keys(npcData).forEach(k => { if (npcData[k] === undefined) delete npcData[k]; });
+
+      if (npcEditIndex >= 0) {
+        const existing = editorNpcs[npcEditIndex];
+        npcData.id = existing.id;
+        npcData.x = existing.x;
+        npcData.y = existing.y;
+        editorNpcs[npcEditIndex] = npcData;
+      } else {
+        npcData.x = modal._pendingX;
+        npcData.y = modal._pendingY;
+        editorNpcs.push(npcData);
+      }
+
+      closeNpcModal();
+      renderNpcMap();
+      updateNpcList();
+    }
+
+    function closeNpcModal() {
+      document.getElementById('npcModal').classList.remove('open');
+    }
+
+    // ============================================================
+    // コード生成
+    // ============================================================
+    function generateCode() {
+      if (!currentMap) return;
+      const tilesArr = currentMap.tiles.map(row => `'${row.join('')}'`);
+
+      const usedInMap = new Set();
+      for (let row of currentMap.tiles) {
+        for (let char of row) usedInMap.add(char);
+      }
+
       const tilesToExport = {};
       function addTileToExport(char) {
         if (tilesToExport[char]) return;
@@ -534,28 +1164,83 @@
           if (cfg.base) addTileToExport(cfg.base);
         }
       }
-      
-      for (let char of usedInMap) {
-        addTileToExport(char);
-      }
-      
+      for (let char of usedInMap) addTileToExport(char);
+
       let out = `// ==========================================\n`;
       out += `// js/data.js の末尾に以下のコードを貼り付けてください\n`;
       out += `// (すでに同じマップの applyMapUpdate がある場合は上書き)\n`;
       out += `// ==========================================\n\n`;
-      
       out += `applyMapUpdate('${currentMapId}', {\n`;
-      out += `  tiles: {\n`;
-      for (const char in tilesToExport) {
-        const cfg = tilesToExport[char];
-        let baseStr = cfg.base ? `, base: '${cfg.base}'` : '';
-        out += `    '${char}': { src: '${cfg.src}', sx: ${cfg.sx}, sy: ${cfg.sy}${baseStr} },\n`;
+
+      // タイル定義
+      if (Object.keys(tilesToExport).length > 0) {
+        out += `  tiles: {\n`;
+        for (const char in tilesToExport) {
+          const cfg = tilesToExport[char];
+          let baseStr = cfg.base ? `, base: '${cfg.base}'` : '';
+          out += `    '${char}': { src: '${cfg.src}', sx: ${cfg.sx}, sy: ${cfg.sy}${baseStr} },\n`;
+        }
+        out += `  },\n`;
       }
-      
-      out += `  },\n`;
+
+      // 衝突判定:
+      // 1. UI で明示的にトグル操作した passableOverrides
+      // 2. 過去の applyMapUpdate で PASSABLE に書き込まれたカスタムタイルの値
+      // …の両方を統合して出力する
+      const passableSection = { ...passableOverrides };
+
+      for (let row of currentMap.tiles) {
+        for (let char of row) {
+          if (char in passableSection) continue; // 既にoverridesに含まれている
+          // TILE_ID[char] === char のカスタムタイルで PASSABLE に値が設定されている場合
+          if (TILE_ID[char] === char && (char in PASSABLE)) {
+            passableSection[char] = PASSABLE[char];
+          }
+          // 標準タイル（例: 'T'→'tree'）が PASSABLE で明示的にfalseになっている場合も収集
+          const tileType = TILE_ID[char];
+          if (tileType && tileType !== char && tileType in PASSABLE && PASSABLE[tileType] === false) {
+            passableSection[char] = false;
+          }
+        }
+      }
+
+      if (Object.keys(passableSection).length > 0) {
+        out += `  passable: {\n`;
+        for (const char in passableSection) {
+          out += `    '${char}': ${passableSection[char]},  // ${passableSection[char] ? '通れる' : '通れない'}\n`;
+        }
+        out += `  },\n`;
+      }
+
+      // NPC定義
+      if (editorNpcs.length > 0) {
+        out += `  npcs: [\n`;
+        for (const npc of editorNpcs) {
+          const lines = JSON.stringify(npc.dialogue || []);
+          let npcLine = `    { id: '${npc.id}', x: ${npc.x}, y: ${npc.y}, dir: '${npc.dir}', color: '${npc.color}', name: '${npc.name}', dialogue: ${lines}`;
+          if (npc.counterTalk) npcLine += `, counterTalk: true`;
+          if (npc.isInn) npcLine += `, isInn: true`;
+          if (npc.innCost && npc.isInn) npcLine += `, innCost: ${npc.innCost}`;
+          if (npc.isWeaponShop) npcLine += `, isWeaponShop: true`;
+          if (npc.isItemShop) npcLine += `, isItemShop: true`;
+          npcLine += ` },\n`;
+          out += npcLine;
+        }
+        out += `  ],\n`;
+      }
+
+      // マップデータ
       out += `  map: [\n      ${tilesArr.join(',\n      ')}\n  ].reverse()\n});\n`;
-      
+
       outputCode.value = out;
+
+      // タイル描画タブに切り替え（出力確認のため）
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector('[data-tab="tile"]').classList.add('active');
+      document.getElementById('tab-tile').classList.add('active');
+
+      outputCode.select();
     }
   </script>
 </body>
